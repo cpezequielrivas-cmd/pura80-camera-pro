@@ -2,1312 +2,5261 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no,
+viewport-fit=cover">
+
 <meta name="theme-color" content="#050505">
-<title>Pura 80 Camera Lab V3.1</title>
+
+<title>Pura 80 AI Camera Pro V4</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{
- margin:0;background:#050505;color:#fff;
- font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
+
+html,
+body{
+  margin:0;
+  padding:0;
+  background:#050505;
+  color:#fff;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body{
+  min-height:100vh;
+}
+
+button,
+select,
+input{
+  font:inherit;
+}
+
+button{
+  border:1px solid #353535;
+  border-radius:11px;
+  padding:10px 12px;
+  color:#fff;
+  background:#171717;
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+button:disabled{
+  opacity:.35;
+}
+
+button.primary{
+  color:#111;
+  background:#fff;
+  border-color:#fff;
+}
+
+button.ai{
+  color:#afffc6;
+  background:#10351d;
+  border-color:#206d3b;
+}
+
+button.active{
+  background:#fff !important;
+  color:#111 !important;
+}
+
+
+/* =========================
+   START
+========================= */
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      #202020,
+      #050505 70%
+    );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.startCard{
+  width:min(440px,100%);
+  text-align:center;
+}
+
+.startCard h1{
+  margin:0 0 8px;
+  font-size:27px;
+}
+
+.startCard .version{
+  display:inline-block;
+  margin-bottom:18px;
+  padding:5px 9px;
+  border:1px solid #3d3d3d;
+  border-radius:999px;
+  font-size:11px;
+  color:#94fbb2;
+}
+
+.startCard p{
+  color:#aaa;
+  line-height:1.5;
+  font-size:14px;
+}
+
+#startButton{
+  width:100%;
+  margin-top:18px;
+  min-height:56px;
+  font-size:16px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
 header{
- height:54px;display:flex;align-items:center;justify-content:space-between;
- padding:0 10px;background:#080808;border-bottom:1px solid #222;
- position:sticky;top:0;z-index:30
-}
-.title{font-weight:800;font-size:13px}
-.badge{
- margin-left:6px;padding:4px 7px;border:1px solid #333;
- border-radius:7px;color:#91f5b1;font-size:10px
-}
-button,select{
- background:#171717;color:#fff;border:1px solid #333;
- border-radius:9px;padding:10px 12px;font-weight:650
-}
-button.primary{background:#eee;color:#111}
-button.ai{background:#10351e;border-color:#1e703b;color:#aaffc4}
-button.active{background:#eee!important;color:#111!important}
-button:disabled{opacity:.4}
+  height:54px;
+  padding:
+    env(safe-area-inset-top)
+    10px
+    0;
 
-.preview{
- position:relative;background:#000;width:100%;height:56vh;
- min-height:360px;overflow:hidden;display:flex;
- align-items:center;justify-content:center
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  position:sticky;
+  top:0;
+  z-index:50;
+
+  background:#080808;
+  border-bottom:1px solid #202020;
 }
+
+.headerTitle{
+  font-weight:800;
+  font-size:13px;
+}
+
+.headerTitle span{
+  margin-left:6px;
+  color:#8df0a9;
+  font-size:10px;
+  font-weight:600;
+}
+
+.headerActions{
+  display:flex;
+  gap:5px;
+}
+
+.headerActions button{
+  padding:7px 9px;
+  font-size:12px;
+}
+
+
+/* =========================
+   CAMERA VIEW
+========================= */
+
+.cameraStage{
+  position:relative;
+
+  height:
+    min(
+      62vh,
+      680px
+    );
+
+  min-height:390px;
+
+  overflow:hidden;
+
+  background:#000;
+}
+
 #videoWrap{
- position:absolute;inset:0;overflow:hidden;
- display:flex;align-items:center;justify-content:center
+  position:absolute;
+  inset:0;
+  overflow:hidden;
 }
-video{
- width:100%;height:100%;object-fit:cover;
- transform-origin:center center
-}
-.status{
- position:absolute;top:8px;left:8px;right:8px;
- text-align:center;color:#72e89c;font-size:11px;
- text-shadow:0 1px 4px #000;z-index:4
-}
-.hud{
- position:absolute;left:8px;bottom:8px;z-index:5;
- background:rgba(0,0,0,.7);border:1px solid #333;
- border-radius:10px;padding:8px;font-size:11px;line-height:1.5
-}
-.stable{
- position:absolute;right:8px;bottom:8px;z-index:5;
- background:rgba(0,0,0,.72);border:1px solid #333;
- padding:8px 10px;border-radius:10px;font-size:11px
-}
-.good{color:#79f59e}
-.bad{color:#ffcb6b}
 
-.controls{padding:9px}
+#video{
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  transform-origin:center center;
+
+  background:#000;
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+#grid{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:5;
+  display:none;
+}
+
+#grid.show{
+  display:block;
+}
+
+.gridV,
+.gridH{
+  position:absolute;
+  background:rgba(255,255,255,.23);
+}
+
+.gridV{
+  top:0;
+  bottom:0;
+  width:1px;
+}
+
+.gridV.a{left:33.333%}
+.gridV.b{left:66.666%}
+
+.gridH{
+  left:0;
+  right:0;
+  height:1px;
+}
+
+.gridH.a{top:33.333%}
+.gridH.b{top:66.666%}
+
+
+/* =========================
+   CAMERA HUD
+========================= */
+
+#cameraStatus{
+  position:absolute;
+  top:9px;
+  left:12px;
+  right:12px;
+
+  z-index:7;
+
+  text-align:center;
+
+  font-size:11px;
+  color:#86efa6;
+
+  text-shadow:
+    0 1px 4px #000,
+    0 1px 8px #000;
+}
+
+.hudLeft{
+  position:absolute;
+  z-index:8;
+
+  left:9px;
+  bottom:10px;
+
+  padding:8px 10px;
+
+  border:1px solid #353535;
+  border-radius:10px;
+
+  background:rgba(0,0,0,.70);
+  backdrop-filter:blur(7px);
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+.hudRight{
+  position:absolute;
+  z-index:8;
+
+  right:9px;
+  bottom:10px;
+
+  padding:8px 10px;
+
+  border:1px solid #353535;
+  border-radius:10px;
+
+  background:rgba(0,0,0,.70);
+  backdrop-filter:blur(7px);
+
+  font-size:11px;
+  text-align:right;
+  line-height:1.5;
+}
+
+.good{
+  color:#7af79e;
+}
+
+.medium{
+  color:#ffd46c;
+}
+
+.bad{
+  color:#ff8d8d;
+}
+
+
+/* =========================
+   UI
+========================= */
+
+main{
+  padding:9px;
+}
+
 .card{
- background:#101010;border:1px solid #292929;
- border-radius:13px;padding:11px;margin-bottom:9px
+  background:#101010;
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:11px;
+  margin-bottom:9px;
 }
-.card h3{font-size:14px;margin:0 0 10px}
-.row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
-.modebar,.zoomButtons{
- display:grid;grid-template-columns:repeat(3,1fr);gap:6px
+
+.card h3{
+  margin:0 0 10px;
+  font-size:14px;
 }
+
+.small{
+  color:#888;
+  font-size:10px;
+  line-height:1.45;
+}
+
+.row{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+
+
+/* =========================
+   MODES
+========================= */
+
+.modeButtons{
+  display:grid;
+  grid-template-columns:
+    repeat(3,1fr);
+  gap:6px;
+}
+
+.modeButtons button{
+  font-size:12px;
+}
+
+
+/* =========================
+   ZOOM
+========================= */
+
 .zoomButtons{
- grid-template-columns:repeat(6,1fr)
+  display:grid;
+  grid-template-columns:
+    repeat(6,1fr);
+  gap:5px;
 }
-.zoomButtons button{padding:9px 2px;font-size:12px}
-.small{font-size:10px;color:#888;line-height:1.45}
-.scene{font-size:20px;font-weight:800;color:#9effba}
-.metricGrid{
- display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px
+
+.zoomButtons button{
+  padding:9px 2px;
+  font-size:11px;
 }
-.metric{
- background:#080808;border:1px solid #222;
- border-radius:9px;padding:9px
-}
-.metric .name{font-size:10px;color:#888}
-.metric .value{font-size:18px;font-weight:750;margin-top:3px}
-label{display:block;color:#aaa;font-size:11px;margin:9px 0 4px}
-input[type=range]{width:100%}
-.hist{
- width:100%;height:85px;background:#050505;
- border:1px solid #222;border-radius:8px
-}
-.recommendation{
- margin-top:9px;background:#08150d;border:1px solid #16512b;
- border-radius:9px;padding:9px;font-size:12px;line-height:1.55
-}
+
 .zoomInfo{
- display:flex;justify-content:space-between;align-items:center;
- padding:9px;background:#080808;border-radius:9px;margin-top:8px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-top:9px;
+  padding:9px;
+
+  background:#080808;
+
+  border-radius:9px;
 }
-.zoomType{
- padding:4px 7px;border-radius:6px;border:1px solid #444;
- font-size:10px;color:#9effba
+
+.zoomBadge{
+  padding:4px 7px;
+
+  border:1px solid #3d3d3d;
+  border-radius:6px;
+
+  color:#8df0aa;
+  font-size:10px;
 }
+
+
+/* =========================
+   ANALYSIS
+========================= */
+
+.sceneTitle{
+  color:#9effbb;
+  font-size:21px;
+  font-weight:800;
+}
+
+.metricGrid{
+  display:grid;
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:7px;
+  margin-top:9px;
+}
+
+.metric{
+  padding:9px;
+
+  border:1px solid #242424;
+  border-radius:9px;
+
+  background:#080808;
+}
+
+.metricName{
+  color:#888;
+  font-size:10px;
+}
+
+.metricValue{
+  margin-top:3px;
+  font-size:19px;
+  font-weight:750;
+}
+
+canvas.hist{
+  width:100%;
+  height:90px;
+
+  border:1px solid #222;
+  border-radius:8px;
+
+  background:#050505;
+}
+
+.recommendation{
+  margin-top:9px;
+  padding:10px;
+
+  border:1px solid #15502a;
+  border-radius:9px;
+
+  background:#08150d;
+
+  font-size:12px;
+  line-height:1.55;
+}
+
+
+/* =========================
+   CONTROLS
+========================= */
+
+.control{
+  margin-bottom:12px;
+}
+
+.control:last-child{
+  margin-bottom:0;
+}
+
+.control label{
+  display:flex;
+  justify-content:space-between;
+
+  margin-bottom:5px;
+
+  color:#aaa;
+  font-size:11px;
+}
+
+select{
+  width:100%;
+
+  padding:9px;
+
+  border:1px solid #333;
+  border-radius:8px;
+
+  color:#fff;
+  background:#181818;
+}
+
+input[type="range"]{
+  width:100%;
+}
+
+.controlWarning{
+  padding:9px;
+
+  color:#e9b96e;
+  background:#1a1207;
+
+  border:1px solid #463318;
+  border-radius:8px;
+
+  font-size:10px;
+}
+
+
+/* =========================
+   PHOTO
+========================= */
+
+#photoPreview{
+  width:100%;
+
+  margin-top:8px;
+
+  border-radius:10px;
+}
+
+.hidden{
+  display:none !important;
+}
+
+details{
+  margin-top:10px;
+}
+
 pre{
- white-space:pre-wrap;word-break:break-word;
- color:#b8d9e8;font-size:10px
+  max-height:360px;
+  overflow:auto;
+
+  white-space:pre-wrap;
+  word-break:break-word;
+
+  color:#b9dcec;
+  font-size:10px;
 }
-.photo{width:100%;border-radius:10px;margin-top:8px}
-.hidden{display:none}
-#flash{
- position:fixed;inset:0;background:white;opacity:0;
- pointer-events:none;z-index:100
+
+
+/* =========================
+   FLASH
+========================= */
+
+#screenFlash{
+  position:fixed;
+  inset:0;
+
+  z-index:300;
+
+  pointer-events:none;
+
+  background:white;
+  opacity:0;
 }
-.flashNow{animation:flash .22s}
-@keyframes flash{
- 0%{opacity:0}40%{opacity:.85}100%{opacity:0}
+
+.flashAnimation{
+  animation:
+    flashAnimation .22s ease-out;
 }
+
+@keyframes flashAnimation{
+
+  0%{
+    opacity:0;
+  }
+
+  35%{
+    opacity:.8;
+  }
+
+  100%{
+    opacity:0;
+  }
+}
+
 </style>
 </head>
 
+
 <body>
 
-<div id="flash"></div>
+<div id="screenFlash"></div>
 
-<header>
- <div class="title">
-  Pura 80 Camera Lab
-  <span class="badge">V3.1 · AI ZOOM</span>
- </div>
- <button id="scanBtn">ESCANEAR</button>
-</header>
 
-<section class="preview">
+<!-- =========================
+     START
+========================= -->
 
- <div id="videoWrap">
-  <video id="video" autoplay playsinline muted></video>
- </div>
+<div id="startScreen">
 
- <div id="status" class="status">Iniciando cámara…</div>
+  <div class="startCard">
 
- <div class="hud">
-  AI: <b id="aiState">AI PRO</b><br>
-  Escena: <b id="sceneMini">--</b><br>
-  Zoom: <b id="zoomHUD">1×</b>
- </div>
+    <h1>Pura 80 AI Camera</h1>
 
- <div class="stable">
-  <span id="stabilityState">Midiendo estabilidad…</span>
- </div>
+    <div class="version">
+      V4 · AI PRO
+    </div>
 
-</section>
+    <p>
+      Cámara experimental con análisis local
+      de escena, controles profesionales,
+      estabilidad, zoom y captura de máxima
+      calidad permitida por el navegador.
+    </p>
 
-<div class="controls">
+    <button
+      id="startButton"
+      class="primary">
+      INICIAR CÁMARA
+    </button>
 
- <div class="card">
-  <h3>Modo</h3>
-  <div class="modebar">
-   <button id="autoMode">AUTO IA</button>
-   <button id="proMode" class="active">AI PRO</button>
-   <button id="manualMode">MANUAL</button>
   </div>
- </div>
-
- <!-- ZOOM -->
- <div class="card">
-  <h3>Zoom</h3>
-
-  <div class="zoomButtons">
-   <button data-z=".5">0.5×</button>
-   <button data-z="1" class="active">1×</button>
-   <button data-z="2">2×</button>
-   <button data-z="3">3×</button>
-   <button data-z="5">5×</button>
-   <button data-z="10">10×</button>
-  </div>
-
-  <div class="zoomInfo">
-   <div>
-    <b id="zoomValue">1.0×</b><br>
-    <span class="small" id="zoomRange">Comprobando hardware…</span>
-   </div>
-   <span id="zoomType" class="zoomType">DETECTANDO</span>
-  </div>
-
-  <label>Zoom continuo</label>
-  <input id="zoomSlider"
-         type="range"
-         min="1"
-         max="10"
-         step=".1"
-         value="1">
-
-  <div class="small" style="margin-top:7px">
-   NATIVO significa que el navegador acepta el control zoom de la cámara.
-   DIGITAL significa que Camera Lab recorta la imagen.
-  </div>
- </div>
-
- <div class="row">
-  <button class="ai" id="analyzeBtn">🧠 ANALIZAR</button>
-  <button class="ai" id="applyBtn">✨ APLICAR IA</button>
-  <button class="primary" id="photoBtn">● FOTO</button>
-  <button id="stableShotBtn">◎ FOTO ESTABLE</button>
-  <button id="torchBtn">⚡ TORCH</button>
- </div>
-
- <!-- IA -->
- <div class="card">
-  <h3>AI Scene Analyzer</h3>
-
-  <div id="sceneName" class="scene">Esperando análisis</div>
-
-  <div class="metricGrid">
-   <div class="metric">
-    <div class="name">Luminosidad</div>
-    <div class="value" id="brightness">--</div>
-   </div>
-   <div class="metric">
-    <div class="name">Contraste</div>
-    <div class="value" id="contrast">--</div>
-   </div>
-   <div class="metric">
-    <div class="name">Sombras</div>
-    <div class="value" id="shadows">--</div>
-   </div>
-   <div class="metric">
-    <div class="name">Altas luces</div>
-    <div class="value" id="highlights">--</div>
-   </div>
-   <div class="metric">
-    <div class="name">Movimiento</div>
-    <div class="value" id="movement">--</div>
-   </div>
-   <div class="metric">
-    <div class="name">Estabilidad</div>
-    <div class="value" id="stability">--</div>
-   </div>
-  </div>
-
-  <label>Histograma</label>
-  <canvas id="histogram" class="hist" width="500" height="100"></canvas>
-
-  <div id="recommendation" class="recommendation">
-   Tocá ANALIZAR.
-  </div>
- </div>
-
- <!-- PRO -->
- <div class="card">
-  <h3>Controles PRO</h3>
-
-  <label>Enfoque</label>
-  <select id="focusMode"></select>
-
-  <label id="focusLabel">Distancia de enfoque</label>
-  <input id="focusDistance" type="range">
-
-  <label>Exposición</label>
-  <select id="exposureMode"></select>
-
-  <label id="evLabel">EV</label>
-  <input id="ev" type="range">
-
-  <label id="expLabel">Tiempo exposición</label>
-  <input id="exposureTime" type="range">
-
-  <label id="isoLabel">ISO</label>
-  <input id="iso" type="range">
-
-  <label>Balance blancos</label>
-  <select id="wbMode"></select>
-
-  <label id="tempLabel">Temperatura color</label>
-  <input id="colorTemperature" type="range">
-
-  <details>
-   <summary>Settings / capabilities</summary>
-   <pre id="diag"></pre>
-  </details>
- </div>
-
- <div class="card">
-  <h3>Cámaras detectadas</h3>
-  <div id="cameraList">Escaneando…</div>
- </div>
-
- <div class="card">
-  <h3>Última fotografía</h3>
-  <img id="photoPreview" class="photo hidden">
-  <div id="photoInfo" class="small">Sin fotografías.</div>
-  <button id="savePhoto" class="hidden" style="margin-top:8px">
-   GUARDAR FOTO
-  </button>
- </div>
 
 </div>
 
-<canvas id="analysisCanvas" width="240" height="180" class="hidden"></canvas>
-<canvas id="captureCanvas" class="hidden"></canvas>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+  <div class="headerTitle">
+
+    PURA 80 AI CAMERA
+
+    <span>V4</span>
+
+  </div>
+
+
+  <div class="headerActions">
+
+    <button id="gridButton">
+      #
+    </button>
+
+    <button id="fullscreenButton">
+      ⛶
+    </button>
+
+    <button id="sensorButton">
+      SENSORES
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- =========================
+     VIEWFINDER
+========================= -->
+
+<section class="cameraStage">
+
+  <div id="videoWrap">
+
+    <video
+      id="video"
+      autoplay
+      playsinline
+      muted>
+    </video>
+
+  </div>
+
+
+  <div id="grid">
+
+    <div class="gridV a"></div>
+    <div class="gridV b"></div>
+
+    <div class="gridH a"></div>
+    <div class="gridH b"></div>
+
+  </div>
+
+
+  <div id="cameraStatus">
+    Cámara detenida
+  </div>
+
+
+  <div class="hudLeft">
+
+    <div>
+      AI:
+      <b id="hudAI">
+        AI PRO
+      </b>
+    </div>
+
+    <div>
+      Escena:
+      <b id="hudScene">
+        --
+      </b>
+    </div>
+
+    <div>
+      Zoom:
+      <b id="hudZoom">
+        1.0×
+      </b>
+    </div>
+
+  </div>
+
+
+  <div class="hudRight">
+
+    <div id="hudStability">
+      Estabilidad --
+    </div>
+
+    <div id="hudSubject">
+      Escena --
+    </div>
+
+    <div id="hudQuality">
+      Calidad --
+    </div>
+
+  </div>
+
+</section>
+
+
+<main>
+
+
+<!-- =========================
+     MODES
+========================= -->
+
+<div class="card">
+
+  <h3>Modo de cámara</h3>
+
+  <div class="modeButtons">
+
+    <button
+      id="autoButton">
+      AUTO IA
+    </button>
+
+    <button
+      id="aiProButton"
+      class="active">
+      AI PRO
+    </button>
+
+    <button
+      id="manualButton">
+      MANUAL
+    </button>
+
+  </div>
+
+  <div
+    class="small"
+    style="margin-top:8px">
+
+    AUTO IA analiza y aplica ajustes.
+    AI PRO recomienda antes de aplicar.
+    MANUAL mantiene tus controles.
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     ZOOM
+========================= -->
+
+<div class="card">
+
+  <h3>Zoom</h3>
+
+  <div class="zoomButtons">
+
+    <button
+      id="zoom05"
+      data-zoom=".5">
+      0.5×
+    </button>
+
+    <button
+      data-zoom="1"
+      class="active">
+      1×
+    </button>
+
+    <button
+      data-zoom="2">
+      2×
+    </button>
+
+    <button
+      data-zoom="3">
+      3×
+    </button>
+
+    <button
+      data-zoom="5">
+      5×
+    </button>
+
+    <button
+      data-zoom="10">
+      10×
+    </button>
+
+  </div>
+
+
+  <div class="zoomInfo">
+
+    <div>
+
+      <b id="zoomValue">
+        1.0×
+      </b>
+
+      <div
+        id="zoomDescription"
+        class="small">
+        Detectando capacidad…
+      </div>
+
+    </div>
+
+    <div
+      id="zoomType"
+      class="zoomBadge">
+      DETECTANDO
+    </div>
+
+  </div>
+
+
+  <div class="control">
+
+    <label>
+      <span>Zoom continuo</span>
+      <span id="zoomSliderValue">
+        1.0×
+      </span>
+    </label>
+
+    <input
+      id="zoomSlider"
+      type="range"
+      min="1"
+      max="10"
+      step=".1"
+      value="1">
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     SHOOTING ACTIONS
+========================= -->
+
+<div class="row">
+
+  <button
+    id="analyzeButton"
+    class="ai">
+    🧠 ANALIZAR
+  </button>
+
+  <button
+    id="applyAIButton"
+    class="ai">
+    ✨ APLICAR IA
+  </button>
+
+  <button
+    id="photoButton"
+    class="primary">
+    ● FOTO
+  </button>
+
+  <button
+    id="stablePhotoButton">
+    ◎ FOTO ESTABLE
+  </button>
+
+  <button
+    id="torchButton">
+    ⚡ TORCH
+  </button>
+
+</div>
+
+
+<!-- =========================
+     AI ANALYSIS
+========================= -->
+
+<div class="card">
+
+  <h3>AI Scene Engine</h3>
+
+  <div
+    id="sceneTitle"
+    class="sceneTitle">
+
+    Esperando análisis
+
+  </div>
+
+
+  <div class="metricGrid">
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Luminosidad
+      </div>
+
+      <div
+        id="brightness"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Contraste
+      </div>
+
+      <div
+        id="contrast"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Sombras
+      </div>
+
+      <div
+        id="shadows"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Altas luces
+      </div>
+
+      <div
+        id="highlights"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Movimiento cámara
+      </div>
+
+      <div
+        id="cameraMovement"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Movimiento escena
+      </div>
+
+      <div
+        id="sceneMovement"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Estabilidad
+      </div>
+
+      <div
+        id="stability"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+    <div class="metric">
+
+      <div class="metricName">
+        Calidad estimada
+      </div>
+
+      <div
+        id="quality"
+        class="metricValue">
+        --
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <label
+    style="
+      display:block;
+      margin:10px 0 5px;
+      color:#888;
+      font-size:11px;
+    ">
+    Histograma
+  </label>
+
+  <canvas
+    id="histogram"
+    class="hist"
+    width="500"
+    height="100">
+  </canvas>
+
+
+  <div
+    id="recommendation"
+    class="recommendation">
+
+    Tocá ANALIZAR.
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     PRO CONTROLS
+========================= -->
+
+<div class="card">
+
+  <h3>Controles PRO</h3>
+
+  <div id="proControls"></div>
+
+  <details>
+
+    <summary>
+      Diagnóstico técnico
+    </summary>
+
+    <pre id="diagnostic"></pre>
+
+  </details>
+
+</div>
+
+
+<!-- =========================
+     CAMERAS
+========================= -->
+
+<div class="card">
+
+  <h3>Cámaras expuestas por Huawei Browser</h3>
+
+  <div id="cameraList">
+    Sin escanear.
+  </div>
+
+</div>
+
+
+<!-- =========================
+     PHOTO
+========================= -->
+
+<div class="card">
+
+  <h3>Última fotografía</h3>
+
+  <div
+    id="photoInfo"
+    class="small">
+    Todavía no se tomó ninguna fotografía.
+  </div>
+
+  <img
+    id="photoPreview"
+    class="hidden">
+
+  <div
+    class="row"
+    style="margin-top:9px">
+
+    <button
+      id="savePhotoButton"
+      class="hidden">
+      GUARDAR FOTO
+    </button>
+
+  </div>
+
+</div>
+
+
+</main>
+
+
+<!-- OFFSCREEN CANVASES -->
+
+<canvas
+  id="analysisCanvas"
+  width="256"
+  height="192"
+  class="hidden">
+</canvas>
+
+<canvas
+  id="captureCanvas"
+  class="hidden">
+</canvas>
+
 
 <script>
 
-const $=s=>document.querySelector(s);
+/* =========================================================
+   GENERAL
+========================================================= */
 
-const video=$("#video");
-
-let stream=null;
-let track=null;
-let caps={};
-let settings={};
-let cameras=[];
-
-let mode="pro";
-let torchOn=false;
-
-let currentZoom=1;
-let zoomMethod="digital";
-
-let lastAnalysis=null;
-let previousFrame=null;
-
-let movementScore=0;
-let stabilityScore=100;
-
-let autoTimer=null;
-let stabilityTimer=null;
-let waitingStableShot=false;
-
-let photoBlob=null;
+const $ =
+  selector =>
+  document.querySelector(selector);
 
 
-/* ---------- HELPERS ---------- */
+const video =
+  $("#video");
 
-const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
-function setStatus(t){
- $("#status").textContent=t;
-}
+let stream = null;
+let track = null;
 
-function flash(){
- const f=$("#flash");
- f.classList.remove("flashNow");
- void f.offsetWidth;
- f.classList.add("flashNow");
-}
+let capabilities = {};
+let settings = {};
 
-function setRange(el,cap,value){
+let cameras = [];
 
- if(!cap || typeof cap!=="object"){
-  el.disabled=true;
-  return;
- }
+let mode = "ai-pro";
 
- el.disabled=false;
+let torchEnabled = false;
 
- if(Number.isFinite(cap.min)) el.min=cap.min;
- if(Number.isFinite(cap.max)) el.max=cap.max;
+let zoomMode = "digital";
+let currentZoom = 1;
 
- el.step=
-  Number.isFinite(cap.step) && cap.step>0
-  ? cap.step
-  : "any";
+let analysisResult = null;
 
- if(Number.isFinite(value))
-  el.value=value;
-}
+let previousAnalysisFrame = null;
 
-function fillSelect(el,values,current){
+let sensorAvailable = false;
+let sensorLastEvent = 0;
 
- el.innerHTML="";
+let sensorMotion = 0;
+let frameMovement = 0;
+let subjectMovement = 0;
 
- if(!Array.isArray(values)){
-  el.disabled=true;
-  return;
- }
+let stabilityScore = 100;
+let qualityScore = 0;
 
- el.disabled=false;
+let autoInterval = null;
+let analysisInterval = null;
 
- values.forEach(v=>{
-  const o=document.createElement("option");
-  o.value=v;
-  o.textContent=v;
-  o.selected=v===current;
-  el.appendChild(o);
- });
+let waitingForStableShot = false;
+let stableSince = 0;
+
+let latestPhotoBlob = null;
+
+let faceDetector = null;
+let faceCount = 0;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function clamp(
+  value,
+  min,
+  max
+){
+
+  return Math.max(
+    min,
+    Math.min(
+      max,
+      value
+    )
+  );
 }
 
 
-/* ---------- CAMERA ---------- */
+function cameraStatus(text){
 
-async function startCamera(deviceId=null){
+  $("#cameraStatus")
+    .textContent =
+    text;
+}
 
- try{
 
-  if(stream)
-   stream.getTracks().forEach(t=>t.stop());
+function flashScreen(){
 
-  stream=await navigator.mediaDevices.getUserMedia({
-   audio:false,
-   video:{
-    facingMode:deviceId ? undefined : {ideal:"environment"},
-    deviceId:deviceId ? {exact:deviceId} : undefined,
-    width:{ideal:4096},
-    height:{ideal:3072}
-   }
-  });
+  const flash =
+    $("#screenFlash");
 
-  video.srcObject=stream;
+  flash.classList
+    .remove(
+      "flashAnimation"
+    );
+
+  void flash.offsetWidth;
+
+  flash.classList
+    .add(
+      "flashAnimation"
+    );
+}
+
+
+function safeJSON(value){
+
+  return JSON.stringify(
+    value,
+    (key,val) =>
+      typeof val === "bigint"
+      ? String(val)
+      : val,
+    2
+  );
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+async function startApp(){
+
+  $("#startButton")
+    .disabled = true;
+
+  $("#startButton")
+    .textContent =
+    "INICIANDO…";
+
+
+  try{
+
+    await startCamera();
+
+    await requestMotionSensors();
+
+    await scanCameras();
+
+    initFaceDetector();
+
+    $("#startScreen")
+      .style.display =
+      "none";
+
+
+    startContinuousAnalysis();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert(
+      "No se pudo iniciar la cámara.\n\n" +
+      error.message
+    );
+
+    $("#startButton")
+      .disabled = false;
+
+    $("#startButton")
+      .textContent =
+      "REINTENTAR";
+
+  }
+
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+async function startCamera(
+  deviceId = null
+){
+
+  stopCamera();
+
+
+  const videoConstraints = {
+
+    width:{
+      ideal:4096
+    },
+
+    height:{
+      ideal:3072
+    }
+
+  };
+
+
+  if(deviceId){
+
+    videoConstraints.deviceId = {
+      exact:deviceId
+    };
+
+  }
+  else{
+
+    videoConstraints.facingMode = {
+      ideal:"environment"
+    };
+
+  }
+
+
+  stream =
+    await navigator.mediaDevices
+      .getUserMedia({
+
+        audio:false,
+
+        video:
+          videoConstraints
+
+      });
+
+
+  video.srcObject =
+    stream;
+
+
   await video.play();
 
-  track=stream.getVideoTracks()[0];
 
-  caps=track.getCapabilities?.() || {};
-  settings=track.getSettings?.() || {};
+  track =
+    stream
+      .getVideoTracks()[0];
 
-  setStatus(
-   `${track.label} · ${settings.width||"?"}×${settings.height||"?"}`
+
+  capabilities =
+    track.getCapabilities
+    ? track.getCapabilities()
+    : {};
+
+
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
+
+
+  cameraStatus(
+    `${track.label} · ` +
+    `${settings.width || "?"}×` +
+    `${settings.height || "?"}`
   );
 
-  previousFrame=null;
 
-  loadControls();
+  previousAnalysisFrame = null;
+
+
   configureZoom();
-  await scanDevices();
 
-  analyzeScene();
+  buildProControls();
 
- }catch(e){
-  console.error(e);
-  setStatus("Error: "+e.message);
- }
+  updateDiagnostic();
+
 }
 
 
-async function scanDevices(){
+function stopCamera(){
 
- const all=await navigator.mediaDevices.enumerateDevices();
+  if(stream){
 
- cameras=all.filter(d=>d.kind==="videoinput");
+    stream
+      .getTracks()
+      .forEach(
+        t => t.stop()
+      );
 
- const box=$("#cameraList");
- box.innerHTML="";
+  }
 
- cameras.forEach((cam,i)=>{
+  stream = null;
+  track = null;
 
-  const active=settings.deviceId===cam.deviceId;
-
-  const d=document.createElement("div");
-
-  d.style.cssText=
-   "border:1px solid #292929;padding:9px;border-radius:9px;margin-bottom:7px";
-
-  d.innerHTML=`
-   <b>CAM ${i} — ${cam.label||"Cámara"}</b><br>
-   <span class="small">${active?"ACTIVA":"Disponible"}</span><br><br>
-  `;
-
-  const b=document.createElement("button");
-
-  b.textContent=active?"ACTIVA":"PROBAR";
-  b.disabled=active;
-
-  b.onclick=()=>startCamera(cam.deviceId);
-
-  d.appendChild(b);
-  box.appendChild(d);
- });
 }
 
 
-/* ---------- APPLY ---------- */
+/* =========================================================
+   CAMERA LIST
+========================================================= */
 
-async function applyAdvanced(obj){
+async function scanCameras(){
 
- if(!track) return false;
+  const devices =
+    await navigator.mediaDevices
+      .enumerateDevices();
 
- try{
 
-  await track.applyConstraints({
-   advanced:[obj]
-  });
+  cameras =
+    devices.filter(
+      device =>
+        device.kind ===
+        "videoinput"
+    );
 
-  settings=track.getSettings?.() || {};
 
-  return true;
+  const container =
+    $("#cameraList");
 
- }catch(e){
 
-  console.warn("Rechazado:",obj,e);
+  container.innerHTML = "";
 
-  return false;
- }
+
+  cameras.forEach(
+    (camera,index)=>{
+
+
+      const isActive =
+        settings.deviceId ===
+        camera.deviceId;
+
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.style.cssText = `
+        padding:9px;
+        margin-bottom:7px;
+        border:1px solid #292929;
+        border-radius:9px;
+        background:#080808;
+      `;
+
+
+      card.innerHTML = `
+
+        <b>
+          CAM ${index}
+        </b>
+
+        <br>
+
+        ${camera.label ||
+          "Cámara "+index}
+
+        <br>
+
+        <span class="small">
+
+          ${
+            isActive
+            ? "ACTIVA"
+            : "Disponible"
+          }
+
+        </span>
+
+        <br><br>
+
+      `;
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.textContent =
+        isActive
+        ? "ACTIVA"
+        : "PROBAR";
+
+
+      button.disabled =
+        isActive;
+
+
+      button.onclick =
+        async()=>{
+
+          await startCamera(
+            camera.deviceId
+          );
+
+          await scanCameras();
+
+        };
+
+
+      card.appendChild(
+        button
+      );
+
+
+      container.appendChild(
+        card
+      );
+
+    }
+  );
+
 }
 
 
-/* ---------- ZOOM ---------- */
+/* =========================================================
+   CONSTRAINTS
+========================================================= */
+
+async function applyConstraint(
+  object
+){
+
+  if(!track)
+    return false;
+
+
+  try{
+
+    await track
+      .applyConstraints({
+
+        advanced:[
+          object
+        ]
+
+      });
+
+
+    settings =
+      track.getSettings
+      ? track.getSettings()
+      : {};
+
+
+    updateDiagnostic();
+
+
+    return true;
+
+  }
+  catch(error){
+
+    console.warn(
+      "Constraint rechazado:",
+      object,
+      error
+    );
+
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   ZOOM
+========================================================= */
 
 function configureZoom(){
 
- settings=track.getSettings?.() || {};
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
 
- if(
-  caps.zoom &&
-  Number.isFinite(caps.zoom.min) &&
-  Number.isFinite(caps.zoom.max)
- ){
 
-  zoomMethod="native";
+  const zoom =
+    capabilities.zoom;
 
-  $("#zoomType").textContent="NATIVO";
 
-  $("#zoomRange").textContent=
-   `${caps.zoom.min}× — ${caps.zoom.max}×`;
+  if(
+    zoom &&
+    Number.isFinite(
+      zoom.min
+    ) &&
+    Number.isFinite(
+      zoom.max
+    )
+  ){
 
-  $("#zoomSlider").min=caps.zoom.min;
-  $("#zoomSlider").max=caps.zoom.max;
-  $("#zoomSlider").step=
-   caps.zoom.step>0 ? caps.zoom.step : .1;
+    zoomMode =
+      "native";
 
-  currentZoom=settings.zoom || caps.zoom.min || 1;
 
- }else{
+    currentZoom =
+      Number.isFinite(
+        settings.zoom
+      )
+      ? settings.zoom
+      : zoom.min;
 
-  zoomMethod="digital";
 
-  $("#zoomType").textContent="DIGITAL";
+    $("#zoomType")
+      .textContent =
+      "NATIVO";
 
-  $("#zoomRange").textContent=
-   "Hardware zoom no expuesto por navegador";
 
-  $("#zoomSlider").min=1;
-  $("#zoomSlider").max=10;
-  $("#zoomSlider").step=.1;
+    $("#zoomDescription")
+      .textContent =
+      `${zoom.min}× — ${zoom.max}×`;
 
-  currentZoom=1;
- }
 
- $("#zoomSlider").value=currentZoom;
+    $("#zoomSlider").min =
+      zoom.min;
 
- updateZoomUI();
+
+    $("#zoomSlider").max =
+      zoom.max;
+
+
+    $("#zoomSlider").step =
+      zoom.step > 0
+      ? zoom.step
+      : .1;
+
+
+    $("#zoom05").disabled =
+      zoom.min > .5;
+
+  }
+  else{
+
+    zoomMode =
+      "digital";
+
+
+    currentZoom = 1;
+
+
+    $("#zoomType")
+      .textContent =
+      "DIGITAL";
+
+
+    $("#zoomDescription")
+      .textContent =
+      "Huawei Browser no expone zoom óptico";
+
+
+    $("#zoomSlider").min =
+      1;
+
+
+    $("#zoomSlider").max =
+      10;
+
+
+    $("#zoomSlider").step =
+      .1;
+
+
+    /*
+      No simulamos 0.5×.
+    */
+
+    $("#zoom05").disabled =
+      true;
+
+  }
+
+
+  $("#zoomSlider").value =
+    currentZoom;
+
+
+  updateZoomUI();
+
 }
 
 
-async function setZoom(z){
+async function setZoom(
+  requested
+){
 
- z=Number(z);
+  let value =
+    Number(requested);
 
- if(zoomMethod==="native"){
 
-  z=clamp(z,caps.zoom.min,caps.zoom.max);
+  if(zoomMode === "native"){
 
-  const ok=await applyAdvanced({zoom:z});
+    value =
+      clamp(
+        value,
+        capabilities.zoom.min,
+        capabilities.zoom.max
+      );
 
-  settings=track.getSettings?.() || {};
 
-  if(ok && Number.isFinite(settings.zoom)){
-   currentZoom=settings.zoom;
-  }else{
-   currentZoom=z;
+    const ok =
+      await applyConstraint({
+        zoom:value
+      });
+
+
+    settings =
+      track.getSettings
+      ? track.getSettings()
+      : {};
+
+
+    if(
+      ok &&
+      Number.isFinite(
+        settings.zoom
+      )
+    ){
+
+      currentZoom =
+        settings.zoom;
+
+    }
+    else{
+
+      currentZoom =
+        value;
+
+    }
+
+
+    video.style.transform =
+      "scale(1)";
+
+  }
+  else{
+
+    if(value < 1)
+      value = 1;
+
+
+    currentZoom =
+      clamp(
+        value,
+        1,
+        10
+      );
+
+
+    video.style.transform =
+      `scale(${currentZoom})`;
+
   }
 
-  /*
-   En zoom nativo NO escalamos el video.
-  */
-  video.style.transform="scale(1)";
 
- }else{
+  $("#zoomSlider").value =
+    currentZoom;
 
-  /*
-   0.5x real no puede crearse mediante recorte.
-   Si no existe hardware ultrawide expuesto,
-   lo dejamos en 1x.
-  */
 
-  if(z<1){
-   z=1;
-  }
+  updateZoomUI();
 
-  currentZoom=clamp(z,1,10);
-
-  video.style.transform=
-   `scale(${currentZoom})`;
- }
-
- $("#zoomSlider").value=currentZoom;
-
- updateZoomUI();
 }
 
 
 function updateZoomUI(){
 
- $("#zoomValue").textContent=
-  currentZoom.toFixed(1)+"×";
+  const text =
+    currentZoom
+      .toFixed(1) +
+    "×";
 
- $("#zoomHUD").textContent=
-  currentZoom.toFixed(1)+"×";
 
- document
-  .querySelectorAll("[data-z]")
-  .forEach(b=>{
-   b.classList.toggle(
-    "active",
-    Math.abs(Number(b.dataset.z)-currentZoom)<.06
-   );
-  });
+  $("#zoomValue")
+    .textContent =
+    text;
+
+
+  $("#zoomSliderValue")
+    .textContent =
+    text;
+
+
+  $("#hudZoom")
+    .textContent =
+    text;
+
+
+  document
+    .querySelectorAll(
+      "[data-zoom]"
+    )
+    .forEach(
+      button =>{
+
+        button.classList
+          .toggle(
+
+            "active",
+
+            Math.abs(
+              Number(
+                button.dataset.zoom
+              ) -
+              currentZoom
+            ) < .06
+
+          );
+
+      }
+    );
+
 }
 
 
-document.querySelectorAll("[data-z]").forEach(b=>{
- b.onclick=()=>setZoom(b.dataset.z);
-});
+/* =========================================================
+   DRAW CURRENT VIEW
+========================================================= */
 
-$("#zoomSlider").oninput=e=>{
- setZoom(e.target.value);
-};
+function drawCurrentView(
+  ctx,
+  outputWidth,
+  outputHeight
+){
 
+  const sourceWidth =
+    video.videoWidth;
 
-/* ---------- PRO CONTROLS ---------- */
 
-function loadControls(){
+  const sourceHeight =
+    video.videoHeight;
 
- settings=track.getSettings?.() || {};
 
- fillSelect($("#focusMode"),caps.focusMode,settings.focusMode);
- fillSelect($("#exposureMode"),caps.exposureMode,settings.exposureMode);
- fillSelect($("#wbMode"),caps.whiteBalanceMode,settings.whiteBalanceMode);
+  if(
+    zoomMode ===
+      "digital" &&
+    currentZoom > 1
+  ){
 
- setRange($("#focusDistance"),caps.focusDistance,settings.focusDistance);
- setRange($("#ev"),caps.exposureCompensation,settings.exposureCompensation);
- setRange($("#exposureTime"),caps.exposureTime,settings.exposureTime);
- setRange($("#iso"),caps.iso,settings.iso);
- setRange($("#colorTemperature"),caps.colorTemperature,settings.colorTemperature);
+    const sw =
+      sourceWidth /
+      currentZoom;
 
- updateLabels();
- updateDiag();
-}
 
+    const sh =
+      sourceHeight /
+      currentZoom;
 
-function updateLabels(){
 
- $("#focusLabel").textContent=
-  "Distancia enfoque: "+($("#focusDistance").value||"--");
+    const sx =
+      (
+        sourceWidth -
+        sw
+      ) / 2;
 
- $("#evLabel").textContent=
-  "EV: "+($("#ev").value||"--");
 
- $("#expLabel").textContent=
-  "Tiempo exposición: "+($("#exposureTime").value||"--");
+    const sy =
+      (
+        sourceHeight -
+        sh
+      ) / 2;
 
- $("#isoLabel").textContent=
-  "ISO: "+($("#iso").value||"--");
 
- $("#tempLabel").textContent=
-  "Temperatura color: "+($("#colorTemperature").value||"--");
-}
+    ctx.drawImage(
 
+      video,
 
-function updateDiag(){
+      sx,
+      sy,
+      sw,
+      sh,
 
- if(!track) return;
+      0,
+      0,
+      outputWidth,
+      outputHeight
 
- settings=track.getSettings?.() || {};
+    );
 
- $("#diag").textContent=JSON.stringify({
-  label:track.label,
-  zoomMethod,
-  currentZoom,
-  settings,
-  capabilities:caps
- },null,2);
-}
-
-
-$("#focusMode").onchange=e=>applyAdvanced({focusMode:e.target.value});
-$("#exposureMode").onchange=e=>applyAdvanced({exposureMode:e.target.value});
-$("#wbMode").onchange=e=>applyAdvanced({whiteBalanceMode:e.target.value});
-
-$("#focusDistance").onchange=e=>
- applyAdvanced({focusDistance:Number(e.target.value)});
-
-$("#ev").onchange=e=>
- applyAdvanced({exposureCompensation:Number(e.target.value)});
-
-$("#exposureTime").onchange=e=>
- applyAdvanced({exposureTime:Number(e.target.value)});
-
-$("#iso").onchange=e=>
- applyAdvanced({iso:Number(e.target.value)});
-
-$("#colorTemperature").onchange=e=>
- applyAdvanced({colorTemperature:Number(e.target.value)});
-
-[
- "#focusDistance","#ev","#exposureTime",
- "#iso","#colorTemperature"
-].forEach(id=>{
- $(id).addEventListener("input",updateLabels);
-});
-
-
-/* ---------- IMAGE ANALYSIS ---------- */
-
-function getFrame(){
-
- if(!video.videoWidth) return null;
-
- const c=$("#analysisCanvas");
- const ctx=c.getContext("2d",{willReadFrequently:true});
-
- c.width=240;
- c.height=180;
-
- /*
-   Para el análisis usamos el frame completo del stream.
-   El zoom digital se tiene en cuenta posteriormente.
- */
-
- ctx.drawImage(video,0,0,c.width,c.height);
-
- return ctx.getImageData(0,0,c.width,c.height);
-}
-
-
-function measureMovement(image){
-
- if(!previousFrame){
-  previousFrame=new Uint8ClampedArray(image.data);
-  return 0;
- }
-
- let diff=0;
- let n=0;
-
- /*
-   Comparación de luminancia entre frames.
-  */
-
- for(let i=0;i<image.data.length;i+=64){
-
-  const now=
-   .2126*image.data[i]+
-   .7152*image.data[i+1]+
-   .0722*image.data[i+2];
-
-  const old=
-   .2126*previousFrame[i]+
-   .7152*previousFrame[i+1]+
-   .0722*previousFrame[i+2];
-
-  diff+=Math.abs(now-old);
-  n++;
- }
-
- previousFrame.set(image.data);
-
- return n ? diff/n : 0;
-}
-
-
-function analyzeScene(){
-
- const image=getFrame();
- if(!image) return;
-
- const data=image.data;
-
- let sum=0,sumSq=0,dark=0,bright=0,count=0;
-
- const hist=new Array(256).fill(0);
-
- for(let i=0;i<data.length;i+=16){
-
-  const lum=Math.round(
-   .2126*data[i]+
-   .7152*data[i+1]+
-   .0722*data[i+2]
-  );
-
-  hist[lum]++;
-  sum+=lum;
-  sumSq+=lum*lum;
-
-  if(lum<45) dark++;
-  if(lum>220) bright++;
-
-  count++;
- }
-
- const mean=sum/count;
-
- const variance=
-  Math.max(0,sumSq/count-mean*mean);
-
- const std=Math.sqrt(variance);
-
- const darkPct=dark/count*100;
- const brightPct=bright/count*100;
-
- movementScore=measureMovement(image);
-
- /*
-   A mayor zoom digital, amplificamos el riesgo
-   fotográfico del movimiento.
-  */
-
- const zoomPenalty=
-  zoomMethod==="digital"
-  ? Math.max(1,currentZoom)
-  : Math.sqrt(Math.max(1,currentZoom));
-
- const effectiveMovement=
-  movementScore*zoomPenalty;
-
- stabilityScore=
-  clamp(100-effectiveMovement*6,0,100);
-
- let scene="Luz normal";
-
- if(mean<45) scene="Muy poca luz";
- else if(mean<80) scene="Poca luz";
- else if(darkPct>25 && brightPct>8) scene="Contraluz";
- else if(mean>205) scene="Muy luminosa";
- else if(std>75) scene="Alto contraste";
- else if(std<30) scene="Bajo contraste";
-
- lastAnalysis={
-  mean,std,darkPct,brightPct,
-  movement:effectiveMovement,
-  stability:stabilityScore,
-  scene,hist
- };
-
- $("#brightness").textContent=Math.round(mean);
- $("#contrast").textContent=Math.round(std);
- $("#shadows").textContent=darkPct.toFixed(1)+"%";
- $("#highlights").textContent=brightPct.toFixed(1)+"%";
- $("#movement").textContent=effectiveMovement.toFixed(1);
- $("#stability").textContent=Math.round(stabilityScore)+"%";
-
- $("#sceneName").textContent=scene;
- $("#sceneMini").textContent=scene;
-
- drawHistogram(hist);
- updateStability();
- createRecommendation();
-
- if(mode==="auto"){
-  applyAI(false);
- }
-}
-
-
-function drawHistogram(hist){
-
- const c=$("#histogram");
- const ctx=c.getContext("2d");
-
- ctx.clearRect(0,0,c.width,c.height);
-
- const max=Math.max(...hist);
-
- ctx.fillStyle="#8de6a9";
-
- hist.forEach((v,i)=>{
-
-  const h=max ? v/max*c.height : 0;
-
-  ctx.fillRect(
-   i/255*c.width,
-   c.height-h,
-   Math.max(1,c.width/256),
-   h
-  );
- });
-}
-
-
-/* ---------- STABILITY ---------- */
-
-function updateStability(){
-
- const el=$("#stabilityState");
-
- if(stabilityScore>=85){
-
-  el.textContent="● ESTABLE "+Math.round(stabilityScore)+"%";
-  el.className="good";
-
- }else if(stabilityScore>=60){
-
-  el.textContent="◐ MOVIMIENTO LEVE "+Math.round(stabilityScore)+"%";
-  el.className="bad";
-
- }else{
-
-  el.textContent="● MOVIMIENTO "+Math.round(stabilityScore)+"%";
-  el.className="bad";
- }
-
- /*
-   Disparo solicitado cuando quede estable.
-  */
-
- if(waitingStableShot && stabilityScore>=88){
-
-  waitingStableShot=false;
-
-  $("#stableShotBtn").textContent="◎ FOTO ESTABLE";
-
-  takePhoto();
- }
-}
-
-
-function startStabilityMonitor(){
-
- clearInterval(stabilityTimer);
-
- stabilityTimer=setInterval(()=>{
-  if(video.videoWidth){
-   analyzeScene();
-  }
- },700);
-}
-
-
-function requestStableShot(){
-
- waitingStableShot=true;
-
- $("#stableShotBtn").textContent=
-  "ESPERANDO ESTABILIDAD…";
-
- analyzeScene();
-}
-
-
-/* ---------- AI ---------- */
-
-function calculateAI(){
-
- if(!lastAnalysis) return {};
-
- const a=lastAnalysis;
- const r={};
-
- if(caps.exposureCompensation){
-
-  let ev=0;
-
-  if(a.mean<45) ev=1;
-  else if(a.mean<80) ev=.5;
-  else if(a.scene==="Contraluz") ev=.5;
-  else if(a.mean>205) ev=-1;
-  else if(a.mean>175) ev=-.5;
-
-  /*
-   Con mucho movimiento evitamos una corrección
-   excesiva de exposición.
-  */
-
-  if(a.stability<55 && ev>0)
-   ev=Math.min(ev,.5);
-
-  r.exposureCompensation=
-   clamp(
-    ev,
-    caps.exposureCompensation.min,
-    caps.exposureCompensation.max
-   );
- }
-
- if(caps.iso){
-
-  let iso;
-
-  /*
-   Ahora usamos luz + estabilidad.
-  */
-
-  if(a.mean<40){
-   iso=a.stability>80 ? 400 : 800;
-  }
-  else if(a.mean<70){
-   iso=a.stability>80 ? 200 : 400;
-  }
-  else if(a.mean<110){
-   iso=200;
   }
   else{
-   iso=100;
+
+    ctx.drawImage(
+
+      video,
+
+      0,
+      0,
+
+      outputWidth,
+      outputHeight
+
+    );
+
   }
 
+}
+
+
+/* =========================================================
+   MOTION SENSORS
+========================================================= */
+
+async function requestMotionSensors(){
+
+  try{
+
+    if(
+      typeof DeviceMotionEvent !==
+      "undefined"
+    ){
+
+      if(
+        typeof
+        DeviceMotionEvent
+          .requestPermission ===
+        "function"
+      ){
+
+        const permission =
+          await DeviceMotionEvent
+            .requestPermission();
+
+
+        if(
+          permission !==
+          "granted"
+        ){
+
+          return;
+
+        }
+
+      }
+
+
+      window.addEventListener(
+        "devicemotion",
+        handleDeviceMotion,
+        true
+      );
+
+    }
+
+  }
+  catch(error){
+
+    console.warn(
+      "Sensores no disponibles:",
+      error
+    );
+
+  }
+
+}
+
+
+let previousAcceleration =
+  null;
+
+
+function handleDeviceMotion(
+  event
+){
+
+  sensorAvailable =
+    true;
+
+
+  sensorLastEvent =
+    Date.now();
+
+
+  const rotation =
+    event.rotationRate || {};
+
+
+  const alpha =
+    Math.abs(
+      rotation.alpha || 0
+    );
+
+
+  const beta =
+    Math.abs(
+      rotation.beta || 0
+    );
+
+
+  const gamma =
+    Math.abs(
+      rotation.gamma || 0
+    );
+
+
+  const rotationMagnitude =
+    alpha +
+    beta +
+    gamma;
+
+
+  let accelerationDelta = 0;
+
+
+  const acceleration =
+    event.accelerationIncludingGravity;
+
+
+  if(acceleration){
+
+    const current = {
+
+      x:
+        acceleration.x || 0,
+
+      y:
+        acceleration.y || 0,
+
+      z:
+        acceleration.z || 0
+
+    };
+
+
+    if(previousAcceleration){
+
+      accelerationDelta =
+
+        Math.abs(
+          current.x -
+          previousAcceleration.x
+        )
+
+        +
+
+        Math.abs(
+          current.y -
+          previousAcceleration.y
+        )
+
+        +
+
+        Math.abs(
+          current.z -
+          previousAcceleration.z
+        );
+
+    }
+
+
+    previousAcceleration =
+      current;
+
+  }
+
+
+  const rawScore =
+    clamp(
+
+      rotationMagnitude *
+      .45
+
+      +
+
+      accelerationDelta *
+      13,
+
+      0,
+      100
+
+    );
+
+
   /*
-   Zoom aumenta sensibilidad al movimiento.
+    Suavizado.
+  */
+
+  sensorMotion =
+
+    sensorMotion *
+    .78
+
+    +
+
+    rawScore *
+    .22;
+
+}
+
+
+/* =========================================================
+   ANALYSIS FRAME
+========================================================= */
+
+function captureAnalysisFrame(){
+
+  if(
+    !video.videoWidth ||
+    !video.videoHeight
+  ){
+
+    return null;
+
+  }
+
+
+  const canvas =
+    $("#analysisCanvas");
+
+
+  canvas.width =
+    256;
+
+
+  canvas.height =
+    192;
+
+
+  const ctx =
+    canvas.getContext(
+      "2d",
+      {
+        willReadFrequently:true
+      }
+    );
+
+
+  drawCurrentView(
+    ctx,
+    canvas.width,
+    canvas.height
+  );
+
+
+  return ctx.getImageData(
+
+    0,
+    0,
+
+    canvas.width,
+    canvas.height
+
+  );
+
+}
+
+
+/* =========================================================
+   FRAME MOVEMENT
+========================================================= */
+
+function calculateFrameMovement(
+  image
+){
+
+  if(
+    !previousAnalysisFrame
+  ){
+
+    previousAnalysisFrame =
+      new Uint8ClampedArray(
+        image.data
+      );
+
+    return 0;
+
+  }
+
+
+  let difference = 0;
+  let samples = 0;
+
+
+  for(
+    let i=0;
+    i<image.data.length;
+    i+=64
+  ){
+
+    const currentLuminance =
+
+      .2126 *
+      image.data[i]
+
+      +
+
+      .7152 *
+      image.data[i+1]
+
+      +
+
+      .0722 *
+      image.data[i+2];
+
+
+    const previousLuminance =
+
+      .2126 *
+      previousAnalysisFrame[i]
+
+      +
+
+      .7152 *
+      previousAnalysisFrame[i+1]
+
+      +
+
+      .0722 *
+      previousAnalysisFrame[i+2];
+
+
+    difference +=
+      Math.abs(
+        currentLuminance -
+        previousLuminance
+      );
+
+
+    samples++;
+
+  }
+
+
+  previousAnalysisFrame.set(
+    image.data
+  );
+
+
+  return samples
+    ? difference / samples
+    : 0;
+
+}
+
+
+/* =========================================================
+   FACE DETECTOR
+========================================================= */
+
+function initFaceDetector(){
+
+  try{
+
+    if(
+      "FaceDetector" in window
+    ){
+
+      faceDetector =
+        new FaceDetector({
+
+          fastMode:true,
+          maxDetectedFaces:5
+
+        });
+
+    }
+
+  }
+  catch(error){
+
+    faceDetector =
+      null;
+
+  }
+
+}
+
+
+async function detectFaces(){
+
+  faceCount = 0;
+
+
+  if(!faceDetector)
+    return;
+
+
+  try{
+
+    const canvas =
+      $("#analysisCanvas");
+
+
+    const faces =
+      await faceDetector
+        .detect(
+          canvas
+        );
+
+
+    faceCount =
+      faces.length;
+
+  }
+  catch(error){
+
+    faceCount = 0;
+
+  }
+
+}
+
+
+/* =========================================================
+   ANALYZE SCENE
+========================================================= */
+
+async function analyzeScene(){
+
+  const image =
+    captureAnalysisFrame();
+
+
+  if(!image)
+    return;
+
+
+  const data =
+    image.data;
+
+
+  const histogram =
+    new Array(
+      256
+    ).fill(0);
+
+
+  let total = 0;
+  let totalSquared = 0;
+
+  let shadows = 0;
+  let highlights = 0;
+
+  let samples = 0;
+
+
+  for(
+    let i=0;
+    i<data.length;
+    i+=16
+  ){
+
+    const luminance =
+      Math.round(
+
+        .2126 *
+        data[i]
+
+        +
+
+        .7152 *
+        data[i+1]
+
+        +
+
+        .0722 *
+        data[i+2]
+
+      );
+
+
+    histogram[
+      luminance
+    ]++;
+
+
+    total +=
+      luminance;
+
+
+    totalSquared +=
+      luminance *
+      luminance;
+
+
+    if(
+      luminance <
+      45
+    ){
+
+      shadows++;
+
+    }
+
+
+    if(
+      luminance >
+      220
+    ){
+
+      highlights++;
+
+    }
+
+
+    samples++;
+
+  }
+
+
+  const brightness =
+    total /
+    samples;
+
+
+  const variance =
+    Math.max(
+
+      0,
+
+      totalSquared /
+      samples
+
+      -
+
+      brightness *
+      brightness
+
+    );
+
+
+  const contrast =
+    Math.sqrt(
+      variance
+    );
+
+
+  const shadowPercent =
+    shadows /
+    samples *
+    100;
+
+
+  const highlightPercent =
+    highlights /
+    samples *
+    100;
+
+
+  frameMovement =
+    calculateFrameMovement(
+      image
+    );
+
+
+  /*
+    ¿Llegan sensores físicos
+    recientemente?
+  */
+
+  const sensorsRecent =
+    sensorAvailable &&
+    (
+      Date.now() -
+      sensorLastEvent
+    ) < 2200;
+
+
+  let cameraMovement;
+
+
+  if(sensorsRecent){
+
+    cameraMovement =
+      sensorMotion;
+
+  }
+  else{
+
+    /*
+      Fallback:
+      estimación visual.
+    */
+
+    cameraMovement =
+      clamp(
+        frameMovement *
+        4,
+        0,
+        100
+      );
+
+  }
+
+
+  /*
+    Movimiento aparente de escena.
+
+    Si tenemos sensores,
+    descontamos parcialmente
+    el movimiento del teléfono.
+  */
+
+  if(sensorsRecent){
+
+    subjectMovement =
+      clamp(
+
+        frameMovement *
+        4
+
+        -
+
+        cameraMovement *
+        .25,
+
+        0,
+        100
+
+      );
+
+  }
+  else{
+
+    subjectMovement =
+      clamp(
+        frameMovement *
+        3,
+        0,
+        100
+      );
+
+  }
+
+
+  stabilityScore =
+    clamp(
+
+      100 -
+      cameraMovement,
+
+      0,
+      100
+
+    );
+
+
+  /*
+    El zoom penaliza estabilidad.
+  */
+
+  if(currentZoom > 1){
+
+    stabilityScore =
+      clamp(
+
+        stabilityScore -
+
+        (
+          currentZoom -
+          1
+        ) *
+        4,
+
+        0,
+        100
+
+      );
+
+  }
+
+
+  await detectFaces();
+
+
+  let scene =
+    "Luz normal";
+
+
+  if(faceCount > 0){
+
+    scene =
+      "Retrato";
+
+  }
+
+
+  if(
+    brightness <
+    42
+  ){
+
+    scene =
+      faceCount
+      ? "Retrato nocturno"
+      : "Muy poca luz";
+
+  }
+  else if(
+    brightness <
+    78
+  ){
+
+    scene =
+      faceCount
+      ? "Retrato con poca luz"
+      : "Poca luz";
+
+  }
+  else if(
+    shadowPercent >
+      25 &&
+    highlightPercent >
+      8
+  ){
+
+    scene =
+      "Contraluz";
+
+  }
+  else if(
+    brightness >
+    205
+  ){
+
+    scene =
+      "Muy luminosa";
+
+  }
+  else if(
+    contrast >
+    75
+  ){
+
+    scene =
+      "Alto contraste";
+
+  }
+  else if(
+    contrast <
+    28
+  ){
+
+    scene =
+      "Bajo contraste";
+
+  }
+
+
+  /*
+    Calidad estimada.
+  */
+
+  let quality =
+    100;
+
+
+  quality -=
+    Math.max(
+      0,
+      45 -
+      brightness
+    ) *
+    .45;
+
+
+  quality -=
+    Math.max(
+      0,
+      highlightPercent -
+      8
+    ) *
+    .8;
+
+
+  quality -=
+    (
+      100 -
+      stabilityScore
+    ) *
+    .38;
+
+
+  quality -=
+    subjectMovement *
+    .18;
+
+
+  if(
+    zoomMode ===
+      "digital" &&
+    currentZoom > 1
+  ){
+
+    quality -=
+      (
+        currentZoom -
+        1
+      ) *
+      7;
+
+  }
+
+
+  qualityScore =
+    clamp(
+      quality,
+      0,
+      100
+    );
+
+
+  analysisResult = {
+
+    brightness,
+    contrast,
+
+    shadowPercent,
+    highlightPercent,
+
+    frameMovement,
+
+    cameraMovement,
+    subjectMovement,
+
+    stability:
+      stabilityScore,
+
+    quality:
+      qualityScore,
+
+    histogram,
+
+    scene,
+
+    faces:
+      faceCount,
+
+    sensors:
+      sensorsRecent
+
+  };
+
+
+  updateAnalysisUI();
+
+  drawHistogram(
+    histogram
+  );
+
+
+  createRecommendation();
+
+
+  if(
+    mode ===
+    "auto"
+  ){
+
+    await applyAI(
+      false
+    );
+
+  }
+
+
+  handleStableShot();
+
+}
+
+
+/* =========================================================
+   ANALYSIS UI
+========================================================= */
+
+function updateAnalysisUI(){
+
+  const a =
+    analysisResult;
+
+
+  $("#sceneTitle")
+    .textContent =
+    a.scene;
+
+
+  $("#hudScene")
+    .textContent =
+    a.scene;
+
+
+  $("#brightness")
+    .textContent =
+    Math.round(
+      a.brightness
+    );
+
+
+  $("#contrast")
+    .textContent =
+    Math.round(
+      a.contrast
+    );
+
+
+  $("#shadows")
+    .textContent =
+    a.shadowPercent
+      .toFixed(1) +
+    "%";
+
+
+  $("#highlights")
+    .textContent =
+    a.highlightPercent
+      .toFixed(1) +
+    "%";
+
+
+  $("#cameraMovement")
+    .textContent =
+    Math.round(
+      a.cameraMovement
+    );
+
+
+  $("#sceneMovement")
+    .textContent =
+    Math.round(
+      a.subjectMovement
+    );
+
+
+  $("#stability")
+    .textContent =
+    Math.round(
+      a.stability
+    ) +
+    "%";
+
+
+  $("#quality")
+    .textContent =
+    Math.round(
+      a.quality
+    ) +
+    "%";
+
+
+  /*
+    HUD stability
+  */
+
+  const stabilityHUD =
+    $("#hudStability");
+
+
+  if(
+    a.stability >=
+    85
+  ){
+
+    stabilityHUD.className =
+      "good";
+
+    stabilityHUD.textContent =
+      "● ESTABLE " +
+      Math.round(
+        a.stability
+      ) +
+      "%";
+
+  }
+  else if(
+    a.stability >=
+    60
+  ){
+
+    stabilityHUD.className =
+      "medium";
+
+    stabilityHUD.textContent =
+      "◐ MOVIMIENTO LEVE";
+
+  }
+  else{
+
+    stabilityHUD.className =
+      "bad";
+
+    stabilityHUD.textContent =
+      "● MOVIMIENTO";
+
+  }
+
+
+  /*
+    Subject motion
+  */
+
+  const subjectHUD =
+    $("#hudSubject");
+
+
+  if(
+    a.subjectMovement <
+    18
+  ){
+
+    subjectHUD.className =
+      "good";
+
+    subjectHUD.textContent =
+      "Escena estable";
+
+  }
+  else if(
+    a.subjectMovement <
+    40
+  ){
+
+    subjectHUD.className =
+      "medium";
+
+    subjectHUD.textContent =
+      "Sujeto moviéndose";
+
+  }
+  else{
+
+    subjectHUD.className =
+      "bad";
+
+    subjectHUD.textContent =
+      "Movimiento alto";
+
+  }
+
+
+  /*
+    Quality
+  */
+
+  const qualityHUD =
+    $("#hudQuality");
+
+
+  if(
+    a.quality >=
+    80
+  ){
+
+    qualityHUD.className =
+      "good";
+
+    qualityHUD.textContent =
+      "Calidad ALTA";
+
+  }
+  else if(
+    a.quality >=
+    55
+  ){
+
+    qualityHUD.className =
+      "medium";
+
+    qualityHUD.textContent =
+      "Calidad MEDIA";
+
+  }
+  else{
+
+    qualityHUD.className =
+      "bad";
+
+    qualityHUD.textContent =
+      "Calidad BAJA";
+
+  }
+
+}
+
+
+/* =========================================================
+   HISTOGRAM
+========================================================= */
+
+function drawHistogram(
+  histogram
+){
+
+  const canvas =
+    $("#histogram");
+
+
+  const ctx =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  const width =
+    canvas.width;
+
+
+  const height =
+    canvas.height;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  const maximum =
+    Math.max(
+      ...histogram
+    );
+
+
+  ctx.fillStyle =
+    "#86e9a3";
+
+
+  histogram.forEach(
+    (value,index)=>{
+
+
+      const barHeight =
+        maximum
+        ? value /
+          maximum *
+          height
+        : 0;
+
+
+      const x =
+        index /
+        255 *
+        width;
+
+
+      ctx.fillRect(
+
+        x,
+
+        height -
+        barHeight,
+
+        Math.max(
+          1,
+          width /
+          256
+        ),
+
+        barHeight
+
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   AI ENGINE
+========================================================= */
+
+function calculateAISettings(){
+
+  if(!analysisResult)
+    return {};
+
+
+  const a =
+    analysisResult;
+
+
+  const result = {};
+
+
+  /*
+    EV
   */
 
   if(
-   currentZoom>=3 &&
-   a.stability<70
+    capabilities
+      .exposureCompensation
   ){
-   iso*=2;
+
+    let ev = 0;
+
+
+    if(
+      a.highlightPercent >
+      15
+    ){
+
+      ev =
+        -.5;
+
+    }
+    else if(
+      a.brightness <
+      40
+    ){
+
+      ev =
+        .5;
+
+    }
+    else if(
+      a.brightness <
+      75
+    ){
+
+      ev =
+        .5;
+
+    }
+    else if(
+      a.brightness >
+      205
+    ){
+
+      ev =
+        -1;
+
+    }
+    else if(
+      a.brightness >
+      175
+    ){
+
+      ev =
+        -.5;
+
+    }
+
+
+    result
+      .exposureCompensation =
+
+      clamp(
+
+        ev,
+
+        capabilities
+          .exposureCompensation
+          .min,
+
+        capabilities
+          .exposureCompensation
+          .max
+
+      );
+
   }
 
-  r.iso=
-   clamp(iso,caps.iso.min,caps.iso.max);
- }
 
- if(
-  Array.isArray(caps.focusMode) &&
-  caps.focusMode.includes("continuous")
- ){
-  r.focusMode="continuous";
- }
+  /*
+    ISO
 
- if(
-  Array.isArray(caps.exposureMode) &&
-  caps.exposureMode.includes("continuous")
- ){
-  r.exposureMode="continuous";
- }
+    Menos ISO si cámara estable.
+    Más ISO si escena/personas se mueven.
+  */
 
- if(
-  Array.isArray(caps.whiteBalanceMode) &&
-  caps.whiteBalanceMode.includes("continuous")
- ){
-  r.whiteBalanceMode="continuous";
- }
+  if(
+    capabilities.iso
+  ){
 
- return r;
+    let iso = 100;
+
+
+    if(
+      a.brightness <
+      35
+    ){
+
+      iso =
+        a.subjectMovement >
+        30
+        ? 1200
+        : (
+            a.stability >
+            80
+            ? 400
+            : 800
+          );
+
+    }
+    else if(
+      a.brightness <
+      60
+    ){
+
+      iso =
+        a.subjectMovement >
+        30
+        ? 800
+        : (
+            a.stability >
+            80
+            ? 300
+            : 500
+          );
+
+    }
+    else if(
+      a.brightness <
+      95
+    ){
+
+      iso =
+        200;
+
+    }
+    else{
+
+      iso =
+        100;
+
+    }
+
+
+    /*
+      Zoom alto requiere
+      velocidad mayor.
+    */
+
+    if(
+      currentZoom >=
+        3 &&
+      a.stability <
+        70
+    ){
+
+      iso *=
+        1.5;
+
+    }
+
+
+    result.iso =
+      Math.round(
+
+        clamp(
+
+          iso,
+
+          capabilities.iso.min,
+
+          capabilities.iso.max
+
+        )
+
+      );
+
+  }
+
+
+  /*
+    Focus
+  */
+
+  if(
+    Array.isArray(
+      capabilities.focusMode
+    ) &&
+    capabilities.focusMode
+      .includes(
+        "continuous"
+      )
+  ){
+
+    result.focusMode =
+      "continuous";
+
+  }
+
+
+  /*
+    Exposure mode
+  */
+
+  if(
+    Array.isArray(
+      capabilities.exposureMode
+    ) &&
+    capabilities.exposureMode
+      .includes(
+        "continuous"
+      )
+  ){
+
+    result.exposureMode =
+      "continuous";
+
+  }
+
+
+  /*
+    White balance
+  */
+
+  if(
+    Array.isArray(
+      capabilities
+        .whiteBalanceMode
+    ) &&
+    capabilities
+      .whiteBalanceMode
+      .includes(
+        "continuous"
+      )
+  ){
+
+    result
+      .whiteBalanceMode =
+      "continuous";
+
+  }
+
+
+  return result;
+
 }
 
+
+/* =========================================================
+   AI RECOMMENDATION
+========================================================= */
 
 function createRecommendation(){
 
- if(!lastAnalysis) return;
-
- const r=calculateAI();
- const a=lastAnalysis;
-
- let h="<b>Recomendación AI PRO</b><br>";
-
- h+=`Escena: ${a.scene}<br>`;
- h+=`Estabilidad: ${Math.round(a.stability)}%<br>`;
- h+=`Zoom: ${currentZoom.toFixed(1)}× (${zoomMethod.toUpperCase()})<br>`;
-
- if(r.iso!==undefined)
-  h+=`ISO recomendado: ${Math.round(r.iso)}<br>`;
-
- if(r.exposureCompensation!==undefined)
-  h+=`EV recomendado: ${r.exposureCompensation}<br>`;
-
- if(r.focusMode)
-  h+=`Enfoque: ${r.focusMode}<br>`;
-
- if(currentZoom>=3 && zoomMethod==="digital")
-  h+="<br>⚠ Zoom digital alto: disminuye el detalle efectivo y amplifica el movimiento.";
-
- if(a.mean<60 && a.stability>80)
-  h+="<br>💡 Poca luz pero cámara estable: podemos priorizar ISO más bajo.";
-
- if(a.mean<60 && a.stability<60)
-  h+="<br>⚠ Poca luz + movimiento: conviene evitar una exposición demasiado larga.";
-
- if(a.brightPct>15)
-  h+="<br>⚠ Riesgo de altas luces quemadas.";
-
- $("#recommendation").innerHTML=h;
-}
+  if(!analysisResult)
+    return;
 
 
-async function applyAI(showResult=true){
+  const a =
+    analysisResult;
 
- if(!lastAnalysis)
-  analyzeScene();
 
- const r=calculateAI();
+  const recommendation =
+    calculateAISettings();
 
- $("#aiState").textContent="aplicando";
 
- if(r.focusMode)
-  await applyAdvanced({focusMode:r.focusMode});
+  let html = `
 
- if(r.exposureMode)
-  await applyAdvanced({exposureMode:r.exposureMode});
+    <b>
+      Recomendación AI PRO
+    </b>
 
- if(r.whiteBalanceMode)
-  await applyAdvanced({whiteBalanceMode:r.whiteBalanceMode});
+    <br>
 
- if(r.exposureCompensation!==undefined)
-  await applyAdvanced({
-   exposureCompensation:r.exposureCompensation
-  });
+    Escena:
+    ${a.scene}
 
- if(r.iso!==undefined)
-  await applyAdvanced({iso:r.iso});
+    <br>
 
- settings=track.getSettings?.() || {};
+    Cámara:
+    ${
+      a.stability >= 85
+      ? "estable"
+      : "en movimiento"
+    }
+    (${Math.round(a.stability)}%)
 
- $("#aiState").textContent=
-  mode==="auto" ? "AUTO" : "AI PRO";
+    <br>
 
- loadControls();
+    Movimiento de escena:
+    ${Math.round(a.subjectMovement)}
 
- if(showResult){
+    <br>
 
-  $("#recommendation").innerHTML+=`
-   <br><br><b>Ajustes comprobados:</b><br>
-   ISO real: ${settings.iso ?? "no informado"}<br>
-   EV real: ${settings.exposureCompensation ?? "no informado"}<br>
-   Enfoque real: ${settings.focusMode ?? "no informado"}<br>
-   Zoom informado: ${settings.zoom ?? "no expuesto"}
+    Zoom:
+    ${currentZoom.toFixed(1)}×
+    (${zoomMode.toUpperCase()})
+
+    <br>
+
   `;
- }
+
+
+  if(
+    recommendation.iso !==
+    undefined
+  ){
+
+    html +=
+      `ISO recomendado:
+      ${recommendation.iso}
+      <br>`;
+
+  }
+
+
+  if(
+    recommendation
+      .exposureCompensation !==
+    undefined
+  ){
+
+    html +=
+      `EV recomendado:
+      ${
+        recommendation
+          .exposureCompensation
+      }
+      <br>`;
+
+  }
+
+
+  if(
+    recommendation.focusMode
+  ){
+
+    html +=
+      `Enfoque:
+      ${recommendation.focusMode}
+      <br>`;
+
+  }
+
+
+  if(
+    a.faces > 0
+  ){
+
+    html +=
+      `<br>
+       👤 Rostro detectado:
+       priorizar estabilidad
+       y exposición del sujeto.`;
+
+  }
+
+
+  if(
+    a.brightness <
+      55 &&
+    a.stability >
+      82
+  ){
+
+    html +=
+      `<br>
+       💡 Cámara estable:
+       podemos evitar subir
+       demasiado el ISO.`;
+
+  }
+
+
+  if(
+    a.brightness <
+      55 &&
+    a.subjectMovement >
+      30
+  ){
+
+    html +=
+      `<br>
+       ⚠️ Poca luz +
+       sujeto en movimiento:
+       conviene priorizar
+       velocidad y aceptar
+       algo más de ISO.`;
+
+  }
+
+
+  if(
+    a.highlightPercent >
+      12
+  ){
+
+    html +=
+      `<br>
+       ⚠️ Altas luces:
+       proteger zonas claras.`;
+
+  }
+
+
+  if(
+    zoomMode ===
+      "digital" &&
+    currentZoom >=
+      3
+  ){
+
+    html +=
+      `<br>
+       ⚠️ Zoom digital alto:
+       disminuye resolución
+       efectiva.`;
+
+  }
+
+
+  html +=
+    `<br><br>
+     Calidad estimada:
+     <b>
+     ${Math.round(a.quality)}%
+     </b>`;
+
+
+  $("#recommendation")
+    .innerHTML =
+    html;
+
 }
 
 
-/* ---------- TORCH ---------- */
+/* =========================================================
+   APPLY AI
+========================================================= */
+
+async function applyAI(
+  showResult = true
+){
+
+  if(
+    !analysisResult
+  ){
+
+    await analyzeScene();
+
+  }
+
+
+  const target =
+    calculateAISettings();
+
+
+  $("#hudAI")
+    .textContent =
+    "AJUSTANDO";
+
+
+  if(
+    target.focusMode
+  ){
+
+    await applyConstraint({
+      focusMode:
+        target.focusMode
+    });
+
+  }
+
+
+  if(
+    target.exposureMode
+  ){
+
+    await applyConstraint({
+      exposureMode:
+        target.exposureMode
+    });
+
+  }
+
+
+  if(
+    target.whiteBalanceMode
+  ){
+
+    await applyConstraint({
+
+      whiteBalanceMode:
+        target
+          .whiteBalanceMode
+
+    });
+
+  }
+
+
+  if(
+    target
+      .exposureCompensation !==
+    undefined
+  ){
+
+    await applyConstraint({
+
+      exposureCompensation:
+        target
+          .exposureCompensation
+
+    });
+
+  }
+
+
+  if(
+    target.iso !==
+    undefined
+  ){
+
+    await applyConstraint({
+      iso:target.iso
+    });
+
+  }
+
+
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
+
+
+  $("#hudAI")
+    .textContent =
+    mode === "auto"
+    ? "AUTO IA"
+    : "AI PRO";
+
+
+  buildProControls();
+
+  updateDiagnostic();
+
+
+  if(showResult){
+
+    $("#recommendation")
+      .innerHTML += `
+
+        <br><br>
+
+        <b>
+          Valores comprobados
+          en la cámara:
+        </b>
+
+        <br>
+
+        ISO real:
+        ${settings.iso ??
+          "no informado"}
+
+        <br>
+
+        EV real:
+        ${
+          settings
+            .exposureCompensation
+          ??
+          "no informado"
+        }
+
+        <br>
+
+        Enfoque:
+        ${settings.focusMode ??
+          "no informado"}
+
+      `;
+
+  }
+
+}
+
+
+/* =========================================================
+   PRO CONTROLS
+========================================================= */
+
+function buildProControls(){
+
+  const container =
+    $("#proControls");
+
+
+  container.innerHTML =
+    "";
+
+
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
+
+
+  addSelectControl(
+
+    container,
+
+    "focusMode",
+
+    "Modo de enfoque",
+
+    capabilities.focusMode,
+
+    settings.focusMode
+
+  );
+
+
+  /*
+    FocusDistance del Pura 80
+    devuelve un máximo absurdo.
+
+    Sólo lo mostramos si
+    el rango es razonable.
+  */
+
+  if(
+    isSaneNumericCapability(
+      capabilities.focusDistance,
+      1000000
+    )
+  ){
+
+    addRangeControl(
+
+      container,
+
+      "focusDistance",
+
+      "Distancia de enfoque",
+
+      capabilities
+        .focusDistance,
+
+      settings
+        .focusDistance
+
+    );
+
+  }
+  else if(
+    capabilities
+      .focusDistance
+  ){
+
+    addWarning(
+      container,
+
+      "Huawei informa distancia de enfoque manual, pero el rango numérico que entrega al navegador no es confiable. El control se oculta para evitar ajustes incorrectos."
+    );
+
+  }
+
+
+  addSelectControl(
+
+    container,
+
+    "exposureMode",
+
+    "Modo de exposición",
+
+    capabilities
+      .exposureMode,
+
+    settings
+      .exposureMode
+
+  );
+
+
+  addRangeControl(
+
+    container,
+
+    "exposureCompensation",
+
+    "Compensación EV",
+
+    capabilities
+      .exposureCompensation,
+
+    settings
+      .exposureCompensation
+
+  );
+
+
+  addRangeControl(
+
+    container,
+
+    "exposureTime",
+
+    "Tiempo de exposición",
+
+    capabilities
+      .exposureTime,
+
+    settings
+      .exposureTime
+
+  );
+
+
+  addRangeControl(
+
+    container,
+
+    "iso",
+
+    "ISO",
+
+    capabilities.iso,
+
+    settings.iso
+
+  );
+
+
+  addSelectControl(
+
+    container,
+
+    "whiteBalanceMode",
+
+    "Balance de blancos",
+
+    capabilities
+      .whiteBalanceMode,
+
+    settings
+      .whiteBalanceMode
+
+  );
+
+
+  addRangeControl(
+
+    container,
+
+    "colorTemperature",
+
+    "Temperatura de color",
+
+    capabilities
+      .colorTemperature,
+
+    settings
+      .colorTemperature
+
+  );
+
+}
+
+
+function isSaneNumericCapability(
+  cap,
+  absoluteMaximum
+){
+
+  if(
+    !cap ||
+    !Number.isFinite(cap.min) ||
+    !Number.isFinite(cap.max)
+  ){
+
+    return false;
+
+  }
+
+
+  if(
+    cap.max <=
+    cap.min
+  ){
+
+    return false;
+
+  }
+
+
+  if(
+    Math.abs(
+      cap.max
+    ) >
+    absoluteMaximum
+  ){
+
+    return false;
+
+  }
+
+
+  return true;
+
+}
+
+
+function addWarning(
+  container,
+  text
+){
+
+  const element =
+    document.createElement(
+      "div"
+    );
+
+
+  element.className =
+    "controlWarning";
+
+
+  element.textContent =
+    text;
+
+
+  container.appendChild(
+    element
+  );
+
+}
+
+
+function addSelectControl(
+
+  container,
+
+  property,
+
+  label,
+
+  values,
+
+  current
+
+){
+
+  if(
+    !Array.isArray(values) ||
+    !values.length
+  ){
+
+    return;
+
+  }
+
+
+  const wrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  wrapper.className =
+    "control";
+
+
+  const title =
+    document.createElement(
+      "label"
+    );
+
+
+  title.innerHTML =
+    `<span>${label}</span>`;
+
+
+  const select =
+    document.createElement(
+      "select"
+    );
+
+
+  values.forEach(
+    value =>{
+
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        value;
+
+
+      option.textContent =
+        value;
+
+
+      option.selected =
+        value ===
+        current;
+
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  select.onchange =
+    async()=>{
+
+      await applyConstraint({
+
+        [property]:
+          select.value
+
+      });
+
+    };
+
+
+  wrapper.appendChild(
+    title
+  );
+
+
+  wrapper.appendChild(
+    select
+  );
+
+
+  container.appendChild(
+    wrapper
+  );
+
+}
+
+
+function addRangeControl(
+
+  container,
+
+  property,
+
+  label,
+
+  cap,
+
+  current
+
+){
+
+  if(
+    !cap ||
+    !Number.isFinite(cap.min) ||
+    !Number.isFinite(cap.max)
+  ){
+
+    return;
+
+  }
+
+
+  const wrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  wrapper.className =
+    "control";
+
+
+  const title =
+    document.createElement(
+      "label"
+    );
+
+
+  const valueText =
+    document.createElement(
+      "span"
+    );
+
+
+  valueText.textContent =
+    Number.isFinite(current)
+    ? current
+    : cap.min;
+
+
+  const labelText =
+    document.createElement(
+      "span"
+    );
+
+
+  labelText.textContent =
+    label;
+
+
+  title.appendChild(
+    labelText
+  );
+
+
+  title.appendChild(
+    valueText
+  );
+
+
+  const input =
+    document.createElement(
+      "input"
+    );
+
+
+  input.type =
+    "range";
+
+
+  input.min =
+    cap.min;
+
+
+  input.max =
+    cap.max;
+
+
+  input.step =
+    (
+      Number.isFinite(cap.step) &&
+      cap.step > 0
+    )
+    ? cap.step
+    : (
+        (
+          cap.max -
+          cap.min
+        ) /
+        100
+        ||
+        1
+      );
+
+
+  input.value =
+    Number.isFinite(current)
+    ? current
+    : cap.min;
+
+
+  input.oninput =
+    ()=>{
+
+      valueText.textContent =
+        input.value;
+
+    };
+
+
+  input.onchange =
+    async()=>{
+
+      await applyConstraint({
+
+        [property]:
+          Number(
+            input.value
+          )
+
+      });
+
+    };
+
+
+  wrapper.appendChild(
+    title
+  );
+
+
+  wrapper.appendChild(
+    input
+  );
+
+
+  container.appendChild(
+    wrapper
+  );
+
+}
+
+
+/* =========================================================
+   TORCH
+========================================================= */
 
 async function toggleTorch(){
 
- if(!caps.torch){
-  alert("Torch no está disponible en esta cámara.");
-  return;
- }
+  if(
+    !capabilities.torch
+  ){
 
- torchOn=!torchOn;
+    alert(
+      "La cámara activa no expone control de linterna."
+    );
 
- const ok=await applyAdvanced({
-  torch:torchOn
- });
+    return;
 
- if(!ok) torchOn=false;
+  }
 
- $("#torchBtn").textContent=
-  torchOn ? "⚡ ON" : "⚡ TORCH";
+
+  torchEnabled =
+    !torchEnabled;
+
+
+  const result =
+    await applyConstraint({
+
+      torch:
+        torchEnabled
+
+    });
+
+
+  if(!result){
+
+    torchEnabled =
+      false;
+
+  }
+
+
+  $("#torchButton")
+    .textContent =
+
+    torchEnabled
+    ? "⚡ TORCH ON"
+    : "⚡ TORCH";
+
 }
 
 
-/* ---------- PHOTO ---------- */
+/* =========================================================
+   STABLE PHOTO
+========================================================= */
+
+function requestStablePhoto(){
+
+  waitingForStableShot =
+    true;
+
+
+  stableSince = 0;
+
+
+  $("#stablePhotoButton")
+    .textContent =
+    "ESPERANDO…";
+
+}
+
+
+function handleStableShot(){
+
+  if(
+    !waitingForStableShot ||
+    !analysisResult
+  ){
+
+    return;
+
+  }
+
+
+  const stable =
+
+    analysisResult.stability >=
+      87
+
+    &&
+
+    analysisResult
+      .subjectMovement <
+      25;
+
+
+  if(stable){
+
+    if(!stableSince){
+
+      stableSince =
+        Date.now();
+
+    }
+
+
+    if(
+      Date.now() -
+      stableSince >
+      650
+    ){
+
+      waitingForStableShot =
+        false;
+
+
+      stableSince = 0;
+
+
+      $("#stablePhotoButton")
+        .textContent =
+        "◎ FOTO ESTABLE";
+
+
+      takePhoto();
+
+    }
+
+  }
+  else{
+
+    stableSince = 0;
+
+  }
+
+}
+
+
+/* =========================================================
+   PHOTO CAPTURE
+========================================================= */
 
 async function takePhoto(){
 
- if(!video.videoWidth) return;
+  if(!track)
+    return;
 
- flash();
 
- const c=$("#captureCanvas");
- const ctx=c.getContext("2d");
+  flashScreen();
 
- /*
-   Captura con zoom digital real:
-   recortamos el frame original en vez de
-   guardar simplemente el CSS ampliado.
+
+  let blob = null;
+
+
+  /*
+    Intentamos primero ImageCapture.
+    Puede obtener más calidad que
+    simplemente capturar el video.
   */
 
- const vw=video.videoWidth;
- const vh=video.videoHeight;
+  if(
+    "ImageCapture" in window
+  ){
 
- c.width=vw;
- c.height=vh;
+    try{
 
- if(
-  zoomMethod==="digital" &&
-  currentZoom>1
- ){
+      const imageCapture =
+        new ImageCapture(
+          track
+        );
 
-  const sw=vw/currentZoom;
-  const sh=vh/currentZoom;
 
-  const sx=(vw-sw)/2;
-  const sy=(vh-sh)/2;
+      blob =
+        await imageCapture
+          .takePhoto();
 
-  ctx.drawImage(
-   video,
-   sx,sy,sw,sh,
-   0,0,vw,vh
-  );
+    }
+    catch(error){
 
- }else{
+      console.warn(
+        "ImageCapture falló:",
+        error
+      );
 
-  ctx.drawImage(
-   video,
-   0,0,vw,vh
-  );
- }
+    }
 
- photoBlob=await new Promise(resolve=>
-  c.toBlob(resolve,"image/jpeg",.96)
- );
+  }
 
- const url=URL.createObjectURL(photoBlob);
 
- $("#photoPreview").src=url;
- $("#photoPreview").classList.remove("hidden");
- $("#savePhoto").classList.remove("hidden");
+  /*
+    Fallback al stream.
+  */
 
- settings=track.getSettings?.() || {};
+  if(!blob){
 
- $("#photoInfo").innerHTML=`
-  ${vw}×${vh}<br>
-  Zoom: ${currentZoom.toFixed(1)}× — ${zoomMethod.toUpperCase()}<br>
-  ISO: ${settings.iso ?? "?"} ·
-  EV: ${settings.exposureCompensation ?? "?"}<br>
-  Estabilidad: ${Math.round(stabilityScore)}%
- `;
+    blob =
+      await captureVideoFrame();
+
+  }
+
+
+  /*
+    Si el zoom es digital,
+    hacemos un recorte real.
+
+    No ampliamos artificialmente
+    la imagen final.
+  */
+
+  if(
+    zoomMode ===
+      "digital" &&
+    currentZoom >
+      1
+  ){
+
+    try{
+
+      blob =
+        await cropBlobForDigitalZoom(
+
+          blob,
+
+          currentZoom
+
+        );
+
+    }
+    catch(error){
+
+      console.warn(
+        "No se pudo recortar:",
+        error
+      );
+
+    }
+
+  }
+
+
+  latestPhotoBlob =
+    blob;
+
+
+  const imageURL =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  $("#photoPreview")
+    .src =
+    imageURL;
+
+
+  $("#photoPreview")
+    .classList
+    .remove(
+      "hidden"
+    );
+
+
+  $("#savePhotoButton")
+    .classList
+    .remove(
+      "hidden"
+    );
+
+
+  const bitmap =
+    await createImageBitmap(
+      blob
+    );
+
+
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
+
+
+  $("#photoInfo")
+    .innerHTML = `
+
+      Resolución:
+      ${bitmap.width} ×
+      ${bitmap.height}
+
+      <br>
+
+      Zoom:
+      ${currentZoom.toFixed(1)}×
+      ${zoomMode.toUpperCase()}
+
+      <br>
+
+      ISO:
+      ${settings.iso ?? "?"}
+
+      · EV:
+      ${
+        settings
+          .exposureCompensation
+        ?? "?"
+      }
+
+      <br>
+
+      Estabilidad:
+      ${Math.round(stabilityScore)}%
+
+      · Calidad estimada:
+      ${Math.round(qualityScore)}%
+
+    `;
+
+
+  bitmap.close();
+
 }
 
+
+async function captureVideoFrame(){
+
+  const canvas =
+    $("#captureCanvas");
+
+
+  canvas.width =
+    video.videoWidth;
+
+
+  canvas.height =
+    video.videoHeight;
+
+
+  const ctx =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  ctx.drawImage(
+
+    video,
+
+    0,
+    0,
+
+    canvas.width,
+    canvas.height
+
+  );
+
+
+  return await new Promise(
+    resolve =>{
+
+      canvas.toBlob(
+
+        resolve,
+
+        "image/jpeg",
+
+        .97
+
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   DIGITAL CROP
+========================================================= */
+
+async function cropBlobForDigitalZoom(
+  blob,
+  zoom
+){
+
+  const bitmap =
+    await createImageBitmap(
+      blob
+    );
+
+
+  const sourceWidth =
+    bitmap.width /
+    zoom;
+
+
+  const sourceHeight =
+    bitmap.height /
+    zoom;
+
+
+  const sourceX =
+    (
+      bitmap.width -
+      sourceWidth
+    ) /
+    2;
+
+
+  const sourceY =
+    (
+      bitmap.height -
+      sourceHeight
+    ) /
+    2;
+
+
+  /*
+    Importante:
+    mantenemos resolución REAL
+    del recorte.
+
+    No reescalamos nuevamente
+    al tamaño original.
+  */
+
+  const outputWidth =
+    Math.round(
+      sourceWidth
+    );
+
+
+  const outputHeight =
+    Math.round(
+      sourceHeight
+    );
+
+
+  const canvas =
+    $("#captureCanvas");
+
+
+  canvas.width =
+    outputWidth;
+
+
+  canvas.height =
+    outputHeight;
+
+
+  const ctx =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  ctx.drawImage(
+
+    bitmap,
+
+    sourceX,
+    sourceY,
+
+    sourceWidth,
+    sourceHeight,
+
+    0,
+    0,
+
+    outputWidth,
+    outputHeight
+
+  );
+
+
+  bitmap.close();
+
+
+  return await new Promise(
+    resolve =>{
+
+      canvas.toBlob(
+
+        resolve,
+
+        "image/jpeg",
+
+        .97
+
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SAVE PHOTO
+========================================================= */
 
 function savePhoto(){
 
- if(!photoBlob) return;
+  if(!latestPhotoBlob)
+    return;
 
- const a=document.createElement("a");
 
- a.href=URL.createObjectURL(photoBlob);
+  const url =
+    URL.createObjectURL(
+      latestPhotoBlob
+    );
 
- const d=new Date();
 
- a.download=
-  `Pura80_AI_${d.getFullYear()}-${
-   String(d.getMonth()+1).padStart(2,"0")
-  }-${
-   String(d.getDate()).padStart(2,"0")
-  }_${
-   String(d.getHours()).padStart(2,"0")
-  }-${
-   String(d.getMinutes()).padStart(2,"0")
-  }.jpg`;
+  const link =
+    document.createElement(
+      "a"
+    );
 
- a.click();
 
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const now =
+    new Date();
+
+
+  const timestamp =
+
+    now.getFullYear()
+
+    +
+
+    String(
+      now.getMonth()+1
+    ).padStart(
+      2,
+      "0"
+    )
+
+    +
+
+    String(
+      now.getDate()
+    ).padStart(
+      2,
+      "0"
+    )
+
+    +
+
+    "_"
+
+    +
+
+    String(
+      now.getHours()
+    ).padStart(
+      2,
+      "0"
+    )
+
+    +
+
+    String(
+      now.getMinutes()
+    ).padStart(
+      2,
+      "0"
+    )
+
+    +
+
+    String(
+      now.getSeconds()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  link.href =
+    url;
+
+
+  link.download =
+    `Pura80_AI_${timestamp}.jpg`;
+
+
+  link.click();
+
+
+  setTimeout(
+    ()=>{
+
+      URL.revokeObjectURL(
+        url
+      );
+
+    },
+    1500
+  );
+
 }
 
 
-/* ---------- MODES ---------- */
+/* =========================================================
+   TAP TO FOCUS
+========================================================= */
 
-function setMode(m){
+video.addEventListener(
+  "click",
+  async()=>{
 
- mode=m;
+    if(
+      Array.isArray(
+        capabilities.focusMode
+      ) &&
+      capabilities.focusMode
+        .includes(
+          "single-shot"
+        )
+    ){
 
- $("#autoMode").classList.toggle("active",m==="auto");
- $("#proMode").classList.toggle("active",m==="pro");
- $("#manualMode").classList.toggle("active",m==="manual");
-
- clearInterval(autoTimer);
-
- if(m==="auto"){
-
-  $("#aiState").textContent="AUTO";
-
-  autoTimer=setInterval(()=>{
-   analyzeScene();
-  },3000);
-
- }else if(m==="pro"){
-
-  $("#aiState").textContent="AI PRO";
-
- }else{
-
-  $("#aiState").textContent="MANUAL";
- }
-}
+      cameraStatus(
+        "Enfocando…"
+      );
 
 
-/* ---------- EVENTS ---------- */
+      await applyConstraint({
+        focusMode:
+          "single-shot"
+      });
 
-$("#scanBtn").onclick=scanDevices;
-$("#analyzeBtn").onclick=analyzeScene;
-$("#applyBtn").onclick=()=>applyAI(true);
-$("#photoBtn").onclick=takePhoto;
-$("#stableShotBtn").onclick=requestStableShot;
-$("#torchBtn").onclick=toggleTorch;
-$("#savePhoto").onclick=savePhoto;
 
-$("#autoMode").onclick=()=>setMode("auto");
-$("#proMode").onclick=()=>setMode("pro");
-$("#manualMode").onclick=()=>setMode("manual");
+      setTimeout(
+        async()=>{
 
-navigator.mediaDevices?.addEventListener(
- "devicechange",
- scanDevices
+          if(
+            capabilities
+              .focusMode
+              .includes(
+                "continuous"
+              )
+          ){
+
+            await applyConstraint({
+              focusMode:
+                "continuous"
+            });
+
+          }
+
+
+          cameraStatus(
+            `${track.label} · ` +
+            `${settings.width || "?"}×` +
+            `${settings.height || "?"}`
+          );
+
+        },
+        750
+      );
+
+    }
+
+  }
 );
 
 
-/* ---------- START ---------- */
+/* =========================================================
+   CAMERA MODE
+========================================================= */
 
-(async()=>{
+function setMode(
+  newMode
+){
 
- if(!navigator.mediaDevices?.getUserMedia){
+  mode =
+    newMode;
 
-  setStatus(
-   "getUserMedia no disponible."
+
+  $("#autoButton")
+    .classList
+    .toggle(
+      "active",
+      mode === "auto"
+    );
+
+
+  $("#aiProButton")
+    .classList
+    .toggle(
+      "active",
+      mode === "ai-pro"
+    );
+
+
+  $("#manualButton")
+    .classList
+    .toggle(
+      "active",
+      mode === "manual"
+    );
+
+
+  clearInterval(
+    autoInterval
   );
 
-  return;
- }
 
- await startCamera();
+  if(
+    mode === "auto"
+  ){
 
- startStabilityMonitor();
+    $("#hudAI")
+      .textContent =
+      "AUTO IA";
 
-})();
+
+    autoInterval =
+      setInterval(
+        async()=>{
+
+          await analyzeScene();
+
+        },
+        2800
+      );
+
+  }
+  else if(
+    mode === "ai-pro"
+  ){
+
+    $("#hudAI")
+      .textContent =
+      "AI PRO";
+
+  }
+  else{
+
+    $("#hudAI")
+      .textContent =
+      "MANUAL";
+
+  }
+
+}
+
+
+/* =========================================================
+   CONTINUOUS ANALYSIS
+========================================================= */
+
+function startContinuousAnalysis(){
+
+  clearInterval(
+    analysisInterval
+  );
+
+
+  analysisInterval =
+    setInterval(
+      async()=>{
+
+        if(
+          video.videoWidth
+        ){
+
+          await analyzeScene();
+
+        }
+
+      },
+      850
+    );
+
+}
+
+
+/* =========================================================
+   DIAGNOSTIC
+========================================================= */
+
+function updateDiagnostic(){
+
+  if(!track)
+    return;
+
+
+  settings =
+    track.getSettings
+    ? track.getSettings()
+    : {};
+
+
+  $("#diagnostic")
+    .textContent =
+    safeJSON({
+
+      label:
+        track.label,
+
+      zoomMode,
+
+      currentZoom,
+
+      sensors:
+        sensorAvailable,
+
+      settings,
+
+      capabilities
+
+    });
+
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+function toggleGrid(){
+
+  $("#grid")
+    .classList
+    .toggle(
+      "show"
+    );
+
+}
+
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+async function toggleFullscreen(){
+
+  try{
+
+    if(
+      !document
+        .fullscreenElement
+    ){
+
+      await document
+        .documentElement
+        .requestFullscreen?.();
+
+    }
+    else{
+
+      await document
+        .exitFullscreen?.();
+
+    }
+
+  }
+  catch(error){
+
+    console.warn(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+$("#startButton")
+  .onclick =
+  startApp;
+
+
+$("#gridButton")
+  .onclick =
+  toggleGrid;
+
+
+$("#fullscreenButton")
+  .onclick =
+  toggleFullscreen;
+
+
+$("#sensorButton")
+  .onclick =
+  requestMotionSensors;
+
+
+$("#analyzeButton")
+  .onclick =
+  analyzeScene;
+
+
+$("#applyAIButton")
+  .onclick =
+  ()=>applyAI(true);
+
+
+$("#photoButton")
+  .onclick =
+  takePhoto;
+
+
+$("#stablePhotoButton")
+  .onclick =
+  requestStablePhoto;
+
+
+$("#torchButton")
+  .onclick =
+  toggleTorch;
+
+
+$("#savePhotoButton")
+  .onclick =
+  savePhoto;
+
+
+$("#autoButton")
+  .onclick =
+  ()=>setMode(
+    "auto"
+  );
+
+
+$("#aiProButton")
+  .onclick =
+  ()=>setMode(
+    "ai-pro"
+  );
+
+
+$("#manualButton")
+  .onclick =
+  ()=>setMode(
+    "manual"
+  );
+
+
+$("#zoomSlider")
+  .oninput =
+  event =>{
+
+    setZoom(
+      event.target.value
+    );
+
+  };
+
+
+document
+  .querySelectorAll(
+    "[data-zoom]"
+  )
+  .forEach(
+    button =>{
+
+      button.onclick =
+        ()=>{
+
+          setZoom(
+            button.dataset.zoom
+          );
+
+        };
+
+    }
+  );
+
+
+navigator.mediaDevices
+  ?.addEventListener(
+    "devicechange",
+    scanCameras
+  );
+
+
+window.addEventListener(
+  "pagehide",
+  ()=>{
+
+    stopCamera();
+
+    clearInterval(
+      autoInterval
+    );
+
+    clearInterval(
+      analysisInterval
+    );
+
+  }
+);
+
 </script>
 
 </body>
