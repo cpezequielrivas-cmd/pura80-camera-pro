@@ -1,35 +1,942 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#050505"><title>Pura 80 Camera Lab V1</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>Pura 80 Camera Lab V2</title>
+
 <style>
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#050505;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}.app{height:100dvh;display:flex;flex-direction:column}.top{position:absolute;z-index:4;top:0;left:0;right:0;padding:max(12px,env(safe-area-inset-top)) 14px 10px;background:linear-gradient(#000b,transparent);display:flex;gap:8px;align-items:center}.title{font-weight:700;flex:1}.badge,button,select{background:#171717cc;color:#fff;border:1px solid #444;border-radius:12px;padding:9px 11px}.stage{flex:1;position:relative;background:#000;display:grid;place-items:center}video{width:100%;height:100%;object-fit:cover}.grid{pointer-events:none;position:absolute;inset:0;background:linear-gradient(90deg,transparent 33.1%,#ffffff35 33.3%,#ffffff35 33.6%,transparent 33.8%,transparent 66.2%,#ffffff35 66.4%,#ffffff35 66.7%,transparent 66.9%),linear-gradient(0deg,transparent 33.1%,#ffffff35 33.3%,#ffffff35 33.6%,transparent 33.8%,transparent 66.2%,#ffffff35 66.4%,#ffffff35 66.7%,transparent 66.9%);display:none}.bottom{position:absolute;z-index:5;bottom:0;left:0;right:0;padding:12px 14px max(16px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#000 25%)}.cams{display:flex;gap:8px;overflow:auto;margin-bottom:10px}.cams button.active{background:#fff;color:#000}.controls{display:flex;gap:8px;align-items:center;justify-content:center}.shutter{width:72px;height:72px;border-radius:50%;border:5px solid #fff;background:#ddd;box-shadow:inset 0 0 0 5px #111}.icon{font-size:18px}.sheet{position:absolute;z-index:10;inset:12% 8px 8px;background:#111f;border:1px solid #444;border-radius:20px;padding:16px;overflow:auto;display:none}.sheet.open{display:block}.sheet h2{margin-top:0}.row{margin:12px 0;padding-bottom:12px;border-bottom:1px solid #333}.row label{display:block;font-size:12px;color:#aaa;margin-bottom:6px}.row input[type=range]{width:100%}pre{white-space:pre-wrap;word-break:break-word;font-size:11px;color:#b9e6ff}.status{position:absolute;z-index:3;top:70px;left:12px;right:12px;text-align:center;font-size:12px;text-shadow:0 1px 3px #000}.thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;background:#222}.hidden{display:none}
-</style></head>
-<body><div class="app">
-<div class="top"><div class="title">Pura 80 Camera Lab <span class="badge">V1</span></div><button id="gridBtn">#</button><button id="diagBtn">DIAG</button></div>
-<div class="stage"><video id="video" autoplay playsinline muted></video><div id="grid" class="grid"></div><div id="status" class="status">Tocá “Iniciar cámara” y aceptá el permiso.</div></div>
-<div class="bottom"><div id="cams" class="cams"></div><div class="controls"><img id="thumb" class="thumb" alt="última foto"><button id="startBtn">Iniciar cámara</button><button id="shot" class="shutter hidden" aria-label="Sacar foto"></button><button id="torchBtn" class="icon hidden">⚡</button></div></div>
-<div id="sheet" class="sheet"><button id="closeSheet" style="float:right">✕</button><h2>Diagnóstico / controles</h2><div id="proControls"></div><h3>Capacidades</h3><pre id="diag"></pre></div>
-<canvas id="canvas" class="hidden"></canvas></div>
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  background:#050505;
+  color:#eee;
+  font-family:system-ui,-apple-system,sans-serif
+}
+body{min-height:100vh}
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column
+}
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 12px;
+  background:#090909;
+  border-bottom:1px solid #222
+}
+.title{font-weight:700}
+.badge{
+  font-size:12px;
+  border:1px solid #444;
+  border-radius:8px;
+  padding:4px 7px
+}
+.stage{
+  position:relative;
+  background:#000;
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden
+}
+video{
+  width:100%;
+  height:100%;
+  max-height:62vh;
+  object-fit:contain;
+  background:#000
+}
+.status{
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  text-align:center;
+  font-size:12px;
+  text-shadow:0 1px 3px #000
+}
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px;
+  background:#0b0b0b;
+  border-top:1px solid #222;
+  border-bottom:1px solid #222
+}
+button,select,input{font:inherit}
+button{
+  background:#181818;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:10px;
+  padding:10px 13px
+}
+button.primary{
+  background:#eee;
+  color:#111;
+  border-color:#eee
+}
+button:disabled{opacity:.45}
+.panel{padding:12px}
+.card{
+  background:#101010;
+  border:1px solid #303030;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px
+}
+.camhead{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:flex-start
+}
+.camname{
+  font-weight:700;
+  word-break:break-word
+}
+.small{
+  font-size:12px;
+  color:#aaa
+}
+.kv{
+  margin-top:8px;
+  font:12px ui-monospace,SFMono-Regular,monospace;
+  color:#c9e7ff;
+  white-space:pre-wrap;
+  word-break:break-word
+}
+.controls{
+  display:grid;
+  gap:12px
+}
+.control label{
+  display:block;
+  font-size:12px;
+  color:#aaa;
+  margin-bottom:5px
+}
+.control input[type=range]{width:100%}
+.row{
+  display:flex;
+  gap:8px;
+  align-items:center
+}
+.row select{
+  flex:1;
+  background:#181818;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:8px;
+  padding:8px
+}
+details{margin-top:10px}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#b9dfff;
+  font-size:11px;
+  max-height:330px;
+  overflow:auto
+}
+h2{
+  font-size:17px;
+  margin:5px 0 12px
+}
+.ok{color:#91e6aa}
+.warn{color:#ffd479}
+.err{color:#ff9d9d}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="title">Pura 80 Camera Lab</div>
+  <div class="badge">V2 · Lens Scanner</div>
+</header>
+
+<div class="stage">
+
+  <video id="video" autoplay playsinline muted></video>
+
+  <div id="status" class="status">
+    Tocá “ESCANEAR CÁMARAS” para comenzar.
+  </div>
+
+</div>
+
+<div class="toolbar">
+
+  <button id="scan" class="primary">
+    ESCANEAR CÁMARAS
+  </button>
+
+  <button id="torch" disabled>
+    ⚡ Torch
+  </button>
+
+  <button id="diag" disabled>
+    DIAG
+  </button>
+
+</div>
+
+<div class="panel">
+
+  <div id="proCard" class="card" hidden>
+
+    <h2>Controles PRO — cámara activa</h2>
+
+    <div id="controls" class="controls"></div>
+
+    <details>
+      <summary>Settings / capabilities</summary>
+      <pre id="activeJson"></pre>
+    </details>
+
+  </div>
+
+  <h2 id="count">
+    Cámaras detectadas: —
+  </h2>
+
+  <div id="cams"></div>
+
+</div>
+
+</div>
+
 <script>
-const $=s=>document.querySelector(s), video=$('#video'), cams=$('#cams'), statusEl=$('#status'), diag=$('#diag'), pro=$('#proControls');
-let stream=null, devices=[], currentId=null, track=null, torch=false;
-const safe=o=>JSON.stringify(o,(k,v)=>typeof v==='function'?undefined:v,2);
-async function stop(){if(stream) stream.getTracks().forEach(t=>t.stop());stream=null;track=null}
-async function permission(){const s=await navigator.mediaDevices.getUserMedia({video:true,audio:false});s.getTracks().forEach(t=>t.stop())}
-async function list(){devices=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');cams.innerHTML='';devices.forEach((d,i)=>{const b=document.createElement('button');b.textContent=d.label||`Cámara ${i+1}`;b.onclick=()=>openCam(d.deviceId);b.dataset.id=d.deviceId;cams.appendChild(b)});statusEl.textContent=`Detectadas ${devices.length} cámara(s) de video.`}
-async function openCam(id){try{await stop();currentId=id;stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:id},width:{ideal:4096},height:{ideal:3072}},audio:false});video.srcObject=stream;track=stream.getVideoTracks()[0];await video.play();[...cams.children].forEach(b=>b.classList.toggle('active',b.dataset.id===id));$('#startBtn').classList.add('hidden');$('#shot').classList.remove('hidden');buildControls();report();statusEl.textContent=track.label||'Cámara activa'}catch(e){statusEl.textContent='Error: '+e.message}}
-function cap(){try{return track?.getCapabilities?.()||{}}catch{return {}}} function set(){try{return track?.getSettings?.()||{}}catch{return {}}}
-async function apply(name,value){try{let v=value;if(['zoom','focusDistance','exposureCompensation','colorTemperature'].includes(name))v=Number(value);await track.applyConstraints({advanced:[{[name]:v}]});report()}catch(e){alert(`${name}: ${e.message}`)}}
-function rangeControl(name,label,c){const s=set();const row=document.createElement('div');row.className='row';row.innerHTML=`<label>${label}: <b>${s[name]??''}</b> (min ${c.min}, max ${c.max}, step ${c.step})</label><input type="range" min="${c.min}" max="${c.max}" step="${c.step||0.01}" value="${s[name]??c.min}">`;const input=row.querySelector('input'),b=row.querySelector('b');input.oninput=()=>b.textContent=input.value;input.onchange=()=>apply(name,input.value);pro.appendChild(row)}
-function selectControl(name,label,vals){const row=document.createElement('div');row.className='row';const sel=document.createElement('select');row.innerHTML=`<label>${label}</label>`;vals.forEach(v=>{let o=document.createElement('option');o.value=o.textContent=v;sel.appendChild(o)});sel.value=set()[name]||vals[0];sel.onchange=()=>apply(name,sel.value);row.appendChild(sel);pro.appendChild(row)}
-function buildControls(){pro.innerHTML='';const c=cap();if(c.zoom)rangeControl('zoom','Zoom',c.zoom);if(c.focusMode)selectControl('focusMode','Modo de enfoque',c.focusMode);if(c.focusDistance)rangeControl('focusDistance','Distancia de enfoque',c.focusDistance);if(c.exposureMode)selectControl('exposureMode','Exposición',c.exposureMode);if(c.exposureCompensation)rangeControl('exposureCompensation','Compensación EV',c.exposureCompensation);if(c.whiteBalanceMode)selectControl('whiteBalanceMode','Balance de blancos',c.whiteBalanceMode);if(c.colorTemperature)rangeControl('colorTemperature','Temperatura de color',c.colorTemperature);$('#torchBtn').classList.toggle('hidden',!c.torch);if(!pro.children.length)pro.innerHTML='<p>El navegador no expone controles manuales adicionales para esta cámara.</p>'}
-function report(){if(!track)return;diag.textContent=safe({label:track.label,settings:set(),capabilities:cap(),constraints:track.getConstraints?.()||{}})}
-async function capture(){if(!track)return;try{if('ImageCapture'in window){const ic=new ImageCapture(track);const blob=await ic.takePhoto();saveBlob(blob);return}}catch(e){}const c=$('#canvas');c.width=video.videoWidth;c.height=video.videoHeight;c.getContext('2d').drawImage(video,0,0);c.toBlob(saveBlob,'image/jpeg',.95)}
-function saveBlob(blob){const url=URL.createObjectURL(blob);$('#thumb').src=url;const a=document.createElement('a');a.href=url;a.download=`PURA80_${new Date().toISOString().replace(/[:.]/g,'-')}.jpg`;a.click();statusEl.textContent=`Foto capturada · ${(blob.size/1024/1024).toFixed(2)} MB`}
-$('#startBtn').onclick=async()=>{try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('getUserMedia no disponible. Usá HTTPS o localhost.');await permission();await list();if(devices[0])await openCam(devices[0].deviceId)}catch(e){statusEl.textContent='No se pudo iniciar: '+e.message}};
-$('#shot').onclick=capture;$('#diagBtn').onclick=()=>{$('#sheet').classList.add('open');report()};$('#closeSheet').onclick=()=>$('#sheet').classList.remove('open');$('#gridBtn').onclick=()=>{$('#grid').style.display=$('#grid').style.display==='block'?'none':'block'};
-$('#torchBtn').onclick=async()=>{try{torch=!torch;await track.applyConstraints({advanced:[{torch}]});$('#torchBtn').textContent=torch?'⚡ ON':'⚡'}catch(e){alert(e.message)}};
-navigator.mediaDevices?.addEventListener?.('devicechange',list);
-</script></body></html>
+
+const $ = s => document.querySelector(s);
+
+let stream = null;
+let track = null;
+let devices = [];
+let activeId = null;
+
+const status = (t,c='') => {
+  const e = $('#status');
+  e.textContent = t;
+  e.className = 'status ' + c;
+};
+
+const safe = o =>
+  JSON.stringify(
+    o,
+    (k,v) => typeof v === 'bigint' ? String(v) : v,
+    2
+  );
+
+async function stop(){
+
+  if(stream){
+    stream.getTracks().forEach(t => t.stop());
+  }
+
+  stream = null;
+  track = null;
+}
+
+async function permission(){
+
+  const s =
+    await navigator.mediaDevices.getUserMedia({
+      video:true,
+      audio:false
+    });
+
+  s.getTracks().forEach(t => t.stop());
+}
+
+async function openCam(deviceId){
+
+  await stop();
+
+  status('Abriendo cámara…');
+
+  const tries = [
+
+    {
+      deviceId:{exact:deviceId},
+      width:{ideal:4096},
+      height:{ideal:3072}
+    },
+
+    {
+      deviceId:{exact:deviceId},
+      width:{ideal:1920},
+      height:{ideal:1080}
+    },
+
+    {
+      deviceId:{exact:deviceId}
+    }
+
+  ];
+
+  let last;
+
+  for(const video of tries){
+
+    try{
+
+      stream =
+        await navigator.mediaDevices.getUserMedia({
+          video,
+          audio:false
+        });
+
+      break;
+
+    }catch(e){
+
+      last = e;
+
+    }
+  }
+
+  if(!stream)
+    throw last;
+
+  $('#video').srcObject = stream;
+
+  track =
+    stream.getVideoTracks()[0];
+
+  activeId = deviceId;
+
+  await $('#video').play().catch(()=>{});
+
+  const s =
+    track.getSettings();
+
+  const c =
+    track.getCapabilities
+      ? track.getCapabilities()
+      : {};
+
+  status(
+    (track.label || 'Cámara') +
+    ' · ' +
+    (s.width || '?') +
+    '×' +
+    (s.height || '?'),
+    'ok'
+  );
+
+  $('#diag').disabled = false;
+
+  buildControls(c,s);
+
+  $('#activeJson').textContent =
+    safe({
+      label:track.label,
+      settings:s,
+      capabilities:c
+    });
+
+  $('#proCard').hidden = false;
+
+  render();
+}
+
+function rangeControl(
+  name,
+  label,
+  cap,
+  val
+){
+
+  if(
+    !cap ||
+    typeof cap !== 'object' ||
+    cap.min === undefined
+  )
+    return '';
+
+  let step = cap.step;
+
+  if(!step || step <= 0)
+    step =
+      (cap.max-cap.min)/100 || 1;
+
+  const v =
+    val !== undefined
+      ? val
+      : cap.min;
+
+  return `
+  <div class="control">
+
+    <label>
+      ${label}:
+      <b id="${name}Val">${v}</b>
+      (min ${cap.min},
+       max ${cap.max},
+       step ${step})
+    </label>
+
+    <input
+      id="${name}"
+      type="range"
+      min="${cap.min}"
+      max="${cap.max}"
+      step="${step}"
+      value="${v}"
+    >
+
+  </div>
+  `;
+}
+
+function selectControl(
+  name,
+  label,
+  opts,
+  val
+){
+
+  if(
+    !Array.isArray(opts) ||
+    !opts.length
+  )
+    return '';
+
+  return `
+  <div class="control">
+
+    <label>${label}</label>
+
+    <div class="row">
+
+      <select id="${name}">
+
+        ${opts.map(
+          x =>
+          `<option
+            ${x===val?'selected':''}
+          >${x}</option>`
+        ).join('')}
+
+      </select>
+
+    </div>
+
+  </div>
+  `;
+}
+
+function buildControls(c,s){
+
+  let h='';
+
+  h += selectControl(
+    'focusMode',
+    'Modo de enfoque',
+    c.focusMode,
+    s.focusMode
+  );
+
+  h += rangeControl(
+    'focusDistance',
+    'Distancia de enfoque',
+    c.focusDistance,
+    s.focusDistance
+  );
+
+  h += selectControl(
+    'exposureMode',
+    'Exposición',
+    c.exposureMode,
+    s.exposureMode
+  );
+
+  h += rangeControl(
+    'exposureCompensation',
+    'Compensación EV',
+    c.exposureCompensation,
+    s.exposureCompensation
+  );
+
+  h += rangeControl(
+    'exposureTime',
+    'Tiempo de exposición',
+    c.exposureTime,
+    s.exposureTime
+  );
+
+  h += rangeControl(
+    'iso',
+    'ISO',
+    c.iso,
+    s.iso
+  );
+
+  h += selectControl(
+    'whiteBalanceMode',
+    'Balance de blancos',
+    c.whiteBalanceMode,
+    s.whiteBalanceMode
+  );
+
+  h += rangeControl(
+    'colorTemperature',
+    'Temperatura de color',
+    c.colorTemperature,
+    s.colorTemperature
+  );
+
+  h += rangeControl(
+    'zoom',
+    'Zoom',
+    c.zoom,
+    s.zoom
+  );
+
+  $('#controls').innerHTML =
+    h ||
+    `<div class="small">
+      El navegador no expone
+      controles avanzados
+      para esta cámara.
+    </div>`;
+
+  for(
+    const el of
+    $('#controls').querySelectorAll(
+      'input,select'
+    )
+  ){
+
+    el.addEventListener(
+      el.tagName === 'SELECT'
+        ? 'change'
+        : 'input',
+
+      async()=>{
+
+        if(el.type === 'range'){
+
+          $('#'+el.id+'Val')
+            .textContent =
+            el.value;
+
+        }
+
+        try{
+
+          await track.applyConstraints({
+
+            advanced:[
+              {
+                [el.id]:
+                el.type === 'range'
+                  ? Number(el.value)
+                  : el.value
+              }
+            ]
+
+          });
+
+        }catch(e){
+
+          status(
+            'Control no aceptado: ' +
+            el.id +
+            ' — ' +
+            e.name,
+            'warn'
+          );
+
+        }
+
+      }
+    );
+  }
+
+  $('#torch').disabled =
+    !c.torch;
+}
+
+async function inspectDevice(d){
+
+  let st=null;
+  let tr=null;
+
+  try{
+
+    st =
+      await navigator.mediaDevices
+      .getUserMedia({
+
+        video:{
+          deviceId:{
+            exact:d.deviceId
+          }
+        },
+
+        audio:false
+
+      });
+
+    tr =
+      st.getVideoTracks()[0];
+
+    const s =
+      tr.getSettings();
+
+    const c =
+      tr.getCapabilities
+        ? tr.getCapabilities()
+        : {};
+
+    return {
+
+      label:
+        tr.label ||
+        d.label ||
+        'Cámara',
+
+      deviceId:d.deviceId,
+
+      groupId:d.groupId,
+
+      settings:s,
+
+      capabilities:c
+
+    };
+
+  }catch(e){
+
+    return {
+
+      label:
+        d.label ||
+        'Cámara',
+
+      deviceId:d.deviceId,
+
+      groupId:d.groupId,
+
+      error:
+        e.name +
+        ': ' +
+        e.message
+
+    };
+
+  }finally{
+
+    if(st)
+      st.getTracks()
+        .forEach(t=>t.stop());
+
+  }
+}
+
+function summary(x){
+
+  const c =
+    x.capabilities || {};
+
+  const s =
+    x.settings || {};
+
+  return [
+
+    `Resolución actual: ${
+      s.width || '?'
+    } × ${
+      s.height || '?'
+    }`,
+
+    `Facing: ${
+      s.facingMode || '—'
+    }`,
+
+    `ISO: ${
+      c.iso
+      ? c.iso.min +
+        '–' +
+        c.iso.max
+      : 'No expuesto'
+    }`,
+
+    `Enfoque: ${
+      Array.isArray(c.focusMode)
+      ? c.focusMode.join(' / ')
+      : 'No expuesto'
+    }`,
+
+    `Torch: ${
+      c.torch
+      ? 'Sí'
+      : 'No'
+    }`,
+
+    `Zoom: ${
+      c.zoom
+      ? c.zoom.min +
+        '–' +
+        c.zoom.max
+      : 'No expuesto'
+    }`,
+
+    `deviceId: ${
+      x.deviceId
+    }`,
+
+    `groupId: ${
+      x.groupId || '—'
+    }`
+
+  ].join('\n');
+}
+
+function render(){
+
+  $('#count').textContent =
+    'Cámaras detectadas: ' +
+    devices.length;
+
+  $('#cams').innerHTML =
+    devices.map(
+      (x,i)=>`
+
+      <div class="card">
+
+        <div class="camhead">
+
+          <div>
+
+            <div class="camname">
+              CAM ${i} — ${x.label}
+            </div>
+
+            <div class="small">
+              ${
+                x.error
+                ? 'No se pudo inspeccionar'
+                : 'Sensor expuesto por el navegador'
+              }
+            </div>
+
+          </div>
+
+          <button
+            onclick="openCam('${x.deviceId}')"
+            ${x.error?'disabled':''}
+          >
+            ${
+              activeId === x.deviceId
+              ? 'ACTIVA'
+              : 'PROBAR'
+            }
+          </button>
+
+        </div>
+
+        <div class="kv">
+          ${
+            x.error
+            ? x.error
+            : summary(x)
+          }
+        </div>
+
+        <details>
+
+          <summary>
+            Ver capacidades completas
+          </summary>
+
+          <pre>${safe(x)}</pre>
+
+        </details>
+
+      </div>
+
+    `).join('');
+}
+
+async function scan(){
+
+  if(
+    !navigator.mediaDevices
+    ?.getUserMedia
+  ){
+
+    status(
+      'Este navegador no soporta MediaDevices.',
+      'err'
+    );
+
+    return;
+  }
+
+  $('#scan').disabled = true;
+
+  status(
+    'Solicitando permiso…'
+  );
+
+  try{
+
+    await permission();
+
+    const all =
+      await navigator.mediaDevices
+      .enumerateDevices();
+
+    const vids =
+      all.filter(
+        d =>
+        d.kind === 'videoinput'
+      );
+
+    status(
+      `Inspeccionando ${vids.length} cámara(s)…`
+    );
+
+    devices=[];
+
+    for(
+      let i=0;
+      i<vids.length;
+      i++
+    ){
+
+      status(
+        `Inspeccionando cámara ${
+          i+1
+        }/${vids.length}…`
+      );
+
+      devices.push(
+        await inspectDevice(
+          vids[i]
+        )
+      );
+
+      render();
+    }
+
+    if(devices.length){
+
+      await openCam(
+        devices[0].deviceId
+      );
+
+    }else{
+
+      status(
+        'No se encontraron cámaras.',
+        'err'
+      );
+
+    }
+
+  }catch(e){
+
+    status(
+      'Error: ' +
+      e.name +
+      ' — ' +
+      e.message,
+      'err'
+    );
+
+  }finally{
+
+    $('#scan').disabled=false;
+
+  }
+}
+
+$('#scan').onclick=scan;
+
+$('#torch').onclick =
+async()=>{
+
+  if(!track)
+    return;
+
+  try{
+
+    const now =
+      !!track.getSettings().torch;
+
+    await track.applyConstraints({
+
+      advanced:[
+        {
+          torch:!now
+        }
+      ]
+
+    });
+
+    $('#torch').textContent =
+      !now
+      ? '⚡ Torch ON'
+      : '⚡ Torch';
+
+  }catch(e){
+
+    status(
+      'No se pudo cambiar torch: ' +
+      e.name,
+      'warn'
+    );
+
+  }
+};
+
+$('#diag').onclick=()=>{
+
+  if(!track)
+    return;
+
+  const c =
+    track.getCapabilities
+    ? track.getCapabilities()
+    : {};
+
+  const s =
+    track.getSettings();
+
+  $('#activeJson').textContent =
+    safe({
+      label:track.label,
+      settings:s,
+      capabilities:c
+    });
+
+  $('#proCard')
+    .scrollIntoView({
+      behavior:'smooth'
+    });
+};
+
+window.openCam=openCam;
+
+window.addEventListener(
+  'pagehide',
+  stop
+);
+
+</script>
+
+</body>
+</html>
