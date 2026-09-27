@@ -4,258 +4,120 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-
-<title>Pura 80 Camera Lab V3</title>
+<title>Pura 80 Camera Lab V3.1</title>
 
 <style>
 *{box-sizing:border-box}
-
 html,body{
-  margin:0;
-  background:#050505;
-  color:#fff;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+ margin:0;background:#050505;color:#fff;
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif
 }
-
-body{
-  min-height:100vh;
-}
-
 header{
-  height:54px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 12px;
-  border-bottom:1px solid #222;
-  background:#080808;
-  position:sticky;
-  top:0;
-  z-index:20;
+ height:54px;display:flex;align-items:center;justify-content:space-between;
+ padding:0 10px;background:#080808;border-bottom:1px solid #222;
+ position:sticky;top:0;z-index:30
 }
-
-.title{
-  font-weight:800;
-  font-size:14px;
-}
-
+.title{font-weight:800;font-size:13px}
 .badge{
-  display:inline-block;
-  margin-left:7px;
-  padding:5px 8px;
-  border:1px solid #333;
-  border-radius:8px;
-  font-size:11px;
-  color:#8ef0b2;
+ margin-left:6px;padding:4px 7px;border:1px solid #333;
+ border-radius:7px;color:#91f5b1;font-size:10px
 }
+button,select{
+ background:#171717;color:#fff;border:1px solid #333;
+ border-radius:9px;padding:10px 12px;font-weight:650
+}
+button.primary{background:#eee;color:#111}
+button.ai{background:#10351e;border-color:#1e703b;color:#aaffc4}
+button.active{background:#eee!important;color:#111!important}
+button:disabled{opacity:.4}
 
 .preview{
-  position:relative;
-  background:#000;
-  width:100%;
-  min-height:420px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+ position:relative;background:#000;width:100%;height:56vh;
+ min-height:360px;overflow:hidden;display:flex;
+ align-items:center;justify-content:center
 }
-
+#videoWrap{
+ position:absolute;inset:0;overflow:hidden;
+ display:flex;align-items:center;justify-content:center
+}
 video{
-  width:100%;
-  max-height:70vh;
-  object-fit:contain;
-  background:#000;
+ width:100%;height:100%;object-fit:cover;
+ transform-origin:center center
 }
-
 .status{
-  position:absolute;
-  top:10px;
-  left:10px;
-  right:10px;
-  text-align:center;
-  color:#77e79e;
-  font-size:12px;
-  text-shadow:0 1px 3px #000;
+ position:absolute;top:8px;left:8px;right:8px;
+ text-align:center;color:#72e89c;font-size:11px;
+ text-shadow:0 1px 4px #000;z-index:4
 }
-
-.aiOverlay{
-  position:absolute;
-  left:10px;
-  bottom:10px;
-  background:rgba(0,0,0,.68);
-  backdrop-filter:blur(8px);
-  padding:8px 10px;
-  border-radius:10px;
-  font-size:12px;
-  line-height:1.45;
-  border:1px solid #333;
+.hud{
+ position:absolute;left:8px;bottom:8px;z-index:5;
+ background:rgba(0,0,0,.7);border:1px solid #333;
+ border-radius:10px;padding:8px;font-size:11px;line-height:1.5
 }
-
-.controls{
-  padding:10px;
+.stable{
+ position:absolute;right:8px;bottom:8px;z-index:5;
+ background:rgba(0,0,0,.72);border:1px solid #333;
+ padding:8px 10px;border-radius:10px;font-size:11px
 }
+.good{color:#79f59e}
+.bad{color:#ffcb6b}
 
-.row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:10px;
-}
-
-button,select{
-  background:#171717;
-  color:white;
-  border:1px solid #333;
-  border-radius:10px;
-  padding:11px 13px;
-  font-weight:650;
-}
-
-button.primary{
-  background:#eee;
-  color:#111;
-}
-
-button.ai{
-  background:#10331d;
-  border-color:#1d6b38;
-  color:#aaffc2;
-}
-
-button.warn{
-  color:#ffd56a;
-}
-
-button:disabled{
-  opacity:.45;
-}
-
+.controls{padding:9px}
 .card{
-  background:#101010;
-  border:1px solid #292929;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:10px;
+ background:#101010;border:1px solid #292929;
+ border-radius:13px;padding:11px;margin-bottom:9px
 }
-
-.card h3{
-  margin:0 0 12px;
-  font-size:15px;
+.card h3{font-size:14px;margin:0 0 10px}
+.row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.modebar,.zoomButtons{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:6px
 }
-
+.zoomButtons{
+ grid-template-columns:repeat(6,1fr)
+}
+.zoomButtons button{padding:9px 2px;font-size:12px}
+.small{font-size:10px;color:#888;line-height:1.45}
+.scene{font-size:20px;font-weight:800;color:#9effba}
 .metricGrid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
+ display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px
 }
-
 .metric{
-  background:#080808;
-  border:1px solid #222;
-  padding:10px;
-  border-radius:10px;
+ background:#080808;border:1px solid #222;
+ border-radius:9px;padding:9px
 }
-
-.metric .name{
-  color:#888;
-  font-size:11px;
+.metric .name{font-size:10px;color:#888}
+.metric .value{font-size:18px;font-weight:750;margin-top:3px}
+label{display:block;color:#aaa;font-size:11px;margin:9px 0 4px}
+input[type=range]{width:100%}
+.hist{
+ width:100%;height:85px;background:#050505;
+ border:1px solid #222;border-radius:8px
 }
-
-.metric .value{
-  margin-top:4px;
-  font-size:20px;
-  font-weight:750;
-}
-
-.scene{
-  font-size:22px;
-  font-weight:800;
-  color:#9effbb;
-}
-
 .recommendation{
-  margin-top:10px;
-  padding:10px;
-  border-radius:10px;
-  background:#08150d;
-  border:1px solid #164b28;
-  line-height:1.6;
+ margin-top:9px;background:#08150d;border:1px solid #16512b;
+ border-radius:9px;padding:9px;font-size:12px;line-height:1.55
 }
-
-label{
-  display:block;
-  color:#aaa;
-  font-size:12px;
-  margin:10px 0 5px;
+.zoomInfo{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:9px;background:#080808;border-radius:9px;margin-top:8px
 }
-
-input[type=range]{
-  width:100%;
+.zoomType{
+ padding:4px 7px;border-radius:6px;border:1px solid #444;
+ font-size:10px;color:#9effba
 }
-
-canvas.hist{
-  width:100%;
-  height:100px;
-  background:#050505;
-  border-radius:8px;
-  border:1px solid #222;
-}
-
-details{
-  margin-top:10px;
-}
-
 pre{
-  white-space:pre-wrap;
-  word-break:break-word;
-  color:#b8d9e8;
-  font-size:11px;
+ white-space:pre-wrap;word-break:break-word;
+ color:#b8d9e8;font-size:10px
 }
-
-.photo{
-  width:100%;
-  margin-top:10px;
-  border-radius:12px;
-}
-
-.hidden{
-  display:none;
-}
-
-.modebar{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
-}
-
-.modebar button.active{
-  background:#eee;
-  color:#111;
-}
-
-.small{
-  color:#777;
-  font-size:11px;
-  line-height:1.4;
-}
-
+.photo{width:100%;border-radius:10px;margin-top:8px}
+.hidden{display:none}
 #flash{
-  position:fixed;
-  inset:0;
-  background:white;
-  pointer-events:none;
-  opacity:0;
-  z-index:100;
+ position:fixed;inset:0;background:white;opacity:0;
+ pointer-events:none;z-index:100
 }
-
-.flashNow{
-  animation:flash .25s;
-}
-
+.flashNow{animation:flash .22s}
 @keyframes flash{
-  0%{opacity:0}
-  40%{opacity:.8}
-  100%{opacity:0}
+ 0%{opacity:0}40%{opacity:.85}100%{opacity:0}
 }
 </style>
 </head>
@@ -265,1262 +127,1187 @@ pre{
 <div id="flash"></div>
 
 <header>
-  <div class="title">
-    Pura 80 Camera Lab
-    <span class="badge">V3 · AI Camera</span>
-  </div>
-
-  <button id="scanBtn">ESCANEAR</button>
+ <div class="title">
+  Pura 80 Camera Lab
+  <span class="badge">V3.1 · AI ZOOM</span>
+ </div>
+ <button id="scanBtn">ESCANEAR</button>
 </header>
 
 <section class="preview">
+
+ <div id="videoWrap">
   <video id="video" autoplay playsinline muted></video>
+ </div>
 
-  <div id="status" class="status">
-    Iniciando cámara…
-  </div>
+ <div id="status" class="status">Iniciando cámara…</div>
 
-  <div class="aiOverlay">
-    <div>AI: <b id="aiState">esperando</b></div>
-    <div>Luz: <b id="lightMini">--</b></div>
-    <div>Escena: <b id="sceneMini">--</b></div>
-  </div>
+ <div class="hud">
+  AI: <b id="aiState">AI PRO</b><br>
+  Escena: <b id="sceneMini">--</b><br>
+  Zoom: <b id="zoomHUD">1×</b>
+ </div>
+
+ <div class="stable">
+  <span id="stabilityState">Midiendo estabilidad…</span>
+ </div>
+
 </section>
 
 <div class="controls">
 
-  <div class="card">
-    <h3>Modo de cámara</h3>
+ <div class="card">
+  <h3>Modo</h3>
+  <div class="modebar">
+   <button id="autoMode">AUTO IA</button>
+   <button id="proMode" class="active">AI PRO</button>
+   <button id="manualMode">MANUAL</button>
+  </div>
+ </div>
 
-    <div class="modebar">
-      <button id="autoMode">AUTO IA</button>
-      <button id="proMode" class="active">AI PRO</button>
-      <button id="manualMode">MANUAL</button>
-    </div>
+ <!-- ZOOM -->
+ <div class="card">
+  <h3>Zoom</h3>
 
-    <p class="small">
-      AUTO IA analiza y aplica ajustes compatibles.
-      AI PRO recomienda antes de aplicar.
-      MANUAL deja los controles bajo tu decisión.
-    </p>
+  <div class="zoomButtons">
+   <button data-z=".5">0.5×</button>
+   <button data-z="1" class="active">1×</button>
+   <button data-z="2">2×</button>
+   <button data-z="3">3×</button>
+   <button data-z="5">5×</button>
+   <button data-z="10">10×</button>
   </div>
 
-  <div class="row">
-    <button class="ai" id="analyzeBtn">
-      🧠 ANALIZAR ESCENA
-    </button>
-
-    <button class="ai" id="applyBtn">
-      ✨ APLICAR IA
-    </button>
-
-    <button class="primary" id="photoBtn">
-      ● FOTO
-    </button>
-
-    <button class="warn" id="torchBtn">
-      ⚡ TORCH
-    </button>
+  <div class="zoomInfo">
+   <div>
+    <b id="zoomValue">1.0×</b><br>
+    <span class="small" id="zoomRange">Comprobando hardware…</span>
+   </div>
+   <span id="zoomType" class="zoomType">DETECTANDO</span>
   </div>
 
+  <label>Zoom continuo</label>
+  <input id="zoomSlider"
+         type="range"
+         min="1"
+         max="10"
+         step=".1"
+         value="1">
 
-  <div class="card">
-    <h3>AI Scene Analyzer</h3>
+  <div class="small" style="margin-top:7px">
+   NATIVO significa que el navegador acepta el control zoom de la cámara.
+   DIGITAL significa que Camera Lab recorta la imagen.
+  </div>
+ </div>
 
-    <div id="sceneName" class="scene">
-      Esperando análisis
-    </div>
+ <div class="row">
+  <button class="ai" id="analyzeBtn">🧠 ANALIZAR</button>
+  <button class="ai" id="applyBtn">✨ APLICAR IA</button>
+  <button class="primary" id="photoBtn">● FOTO</button>
+  <button id="stableShotBtn">◎ FOTO ESTABLE</button>
+  <button id="torchBtn">⚡ TORCH</button>
+ </div>
 
-    <div class="metricGrid">
+ <!-- IA -->
+ <div class="card">
+  <h3>AI Scene Analyzer</h3>
 
-      <div class="metric">
-        <div class="name">Luminosidad</div>
-        <div class="value" id="brightness">--</div>
-      </div>
+  <div id="sceneName" class="scene">Esperando análisis</div>
 
-      <div class="metric">
-        <div class="name">Contraste</div>
-        <div class="value" id="contrast">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="name">Sombras</div>
-        <div class="value" id="shadows">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="name">Altas luces</div>
-        <div class="value" id="highlights">--</div>
-      </div>
-
-    </div>
-
-    <label>Histograma de luminancia</label>
-    <canvas id="histogram" class="hist"
-            width="500" height="100"></canvas>
-
-    <div id="recommendation"
-         class="recommendation">
-      Tocá ANALIZAR ESCENA.
-    </div>
+  <div class="metricGrid">
+   <div class="metric">
+    <div class="name">Luminosidad</div>
+    <div class="value" id="brightness">--</div>
+   </div>
+   <div class="metric">
+    <div class="name">Contraste</div>
+    <div class="value" id="contrast">--</div>
+   </div>
+   <div class="metric">
+    <div class="name">Sombras</div>
+    <div class="value" id="shadows">--</div>
+   </div>
+   <div class="metric">
+    <div class="name">Altas luces</div>
+    <div class="value" id="highlights">--</div>
+   </div>
+   <div class="metric">
+    <div class="name">Movimiento</div>
+    <div class="value" id="movement">--</div>
+   </div>
+   <div class="metric">
+    <div class="name">Estabilidad</div>
+    <div class="value" id="stability">--</div>
+   </div>
   </div>
 
+  <label>Histograma</label>
+  <canvas id="histogram" class="hist" width="500" height="100"></canvas>
 
-  <div class="card">
-    <h3>Controles PRO — cámara activa</h3>
-
-    <label>Enfoque</label>
-    <select id="focusMode"></select>
-
-    <label id="focusLabel">Distancia de enfoque</label>
-    <input id="focusDistance" type="range">
-
-    <label>Exposición</label>
-    <select id="exposureMode"></select>
-
-    <label id="evLabel">Compensación EV</label>
-    <input id="ev" type="range">
-
-    <label id="expLabel">Tiempo de exposición</label>
-    <input id="exposureTime" type="range">
-
-    <label id="isoLabel">ISO</label>
-    <input id="iso" type="range">
-
-    <label>Balance de blancos</label>
-    <select id="wbMode"></select>
-
-    <label id="tempLabel">Temperatura de color</label>
-    <input id="colorTemperature" type="range">
-
-    <details>
-      <summary>Settings / capabilities</summary>
-      <pre id="diag"></pre>
-    </details>
+  <div id="recommendation" class="recommendation">
+   Tocá ANALIZAR.
   </div>
+ </div>
 
+ <!-- PRO -->
+ <div class="card">
+  <h3>Controles PRO</h3>
 
-  <div class="card">
-    <h3>Cámaras detectadas</h3>
-    <div id="cameraList">
-      Escaneando…
-    </div>
-  </div>
+  <label>Enfoque</label>
+  <select id="focusMode"></select>
 
+  <label id="focusLabel">Distancia de enfoque</label>
+  <input id="focusDistance" type="range">
 
-  <div class="card">
-    <h3>Última fotografía</h3>
+  <label>Exposición</label>
+  <select id="exposureMode"></select>
 
-    <img id="photoPreview"
-         class="photo hidden">
+  <label id="evLabel">EV</label>
+  <input id="ev" type="range">
 
-    <div id="photoInfo"
-         class="small">
-      Todavía no se tomó ninguna fotografía.
-    </div>
+  <label id="expLabel">Tiempo exposición</label>
+  <input id="exposureTime" type="range">
 
-    <div class="row" style="margin-top:10px">
-      <button id="savePhoto"
-              class="hidden">
-        GUARDAR FOTO
-      </button>
-    </div>
-  </div>
+  <label id="isoLabel">ISO</label>
+  <input id="iso" type="range">
+
+  <label>Balance blancos</label>
+  <select id="wbMode"></select>
+
+  <label id="tempLabel">Temperatura color</label>
+  <input id="colorTemperature" type="range">
+
+  <details>
+   <summary>Settings / capabilities</summary>
+   <pre id="diag"></pre>
+  </details>
+ </div>
+
+ <div class="card">
+  <h3>Cámaras detectadas</h3>
+  <div id="cameraList">Escaneando…</div>
+ </div>
+
+ <div class="card">
+  <h3>Última fotografía</h3>
+  <img id="photoPreview" class="photo hidden">
+  <div id="photoInfo" class="small">Sin fotografías.</div>
+  <button id="savePhoto" class="hidden" style="margin-top:8px">
+   GUARDAR FOTO
+  </button>
+ </div>
 
 </div>
 
-<canvas id="analysisCanvas"
-        width="320"
-        height="240"
-        class="hidden"></canvas>
-
-<canvas id="captureCanvas"
-        class="hidden"></canvas>
+<canvas id="analysisCanvas" width="240" height="180" class="hidden"></canvas>
+<canvas id="captureCanvas" class="hidden"></canvas>
 
 <script>
 
-const $ = s => document.querySelector(s);
+const $=s=>document.querySelector(s);
 
-const video = $("#video");
-const statusEl = $("#status");
+const video=$("#video");
 
-let stream = null;
-let track = null;
-let caps = {};
-let settings = {};
-let cameras = [];
+let stream=null;
+let track=null;
+let caps={};
+let settings={};
+let cameras=[];
 
-let mode = "pro";
-let torchOn = false;
-let lastAnalysis = null;
-let photoBlob = null;
-let autoTimer = null;
+let mode="pro";
+let torchOn=false;
+
+let currentZoom=1;
+let zoomMethod="digital";
+
+let lastAnalysis=null;
+let previousFrame=null;
+
+let movementScore=0;
+let stabilityScore=100;
+
+let autoTimer=null;
+let stabilityTimer=null;
+let waitingStableShot=false;
+
+let photoBlob=null;
 
 
-/* =========================
-   UTILIDADES
-========================= */
+/* ---------- HELPERS ---------- */
 
-function clamp(v,min,max){
-  return Math.max(min,Math.min(max,v));
-}
+const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
 function setStatus(t){
-  statusEl.textContent = t;
+ $("#status").textContent=t;
 }
 
 function flash(){
-  const f=$("#flash");
-  f.classList.remove("flashNow");
-  void f.offsetWidth;
-  f.classList.add("flashNow");
-}
-
-function capability(name){
-  return caps && caps[name];
-}
-
-function supports(name){
-  return capability(name) !== undefined;
+ const f=$("#flash");
+ f.classList.remove("flashNow");
+ void f.offsetWidth;
+ f.classList.add("flashNow");
 }
 
 function setRange(el,cap,value){
 
-  if(!cap || typeof cap !== "object"){
-    el.disabled=true;
-    return;
-  }
+ if(!cap || typeof cap!=="object"){
+  el.disabled=true;
+  return;
+ }
 
-  el.disabled=false;
+ el.disabled=false;
 
-  if(Number.isFinite(cap.min))
-    el.min=cap.min;
+ if(Number.isFinite(cap.min)) el.min=cap.min;
+ if(Number.isFinite(cap.max)) el.max=cap.max;
 
-  if(Number.isFinite(cap.max))
-    el.max=cap.max;
+ el.step=
+  Number.isFinite(cap.step) && cap.step>0
+  ? cap.step
+  : "any";
 
-  if(Number.isFinite(cap.step) && cap.step>0)
-    el.step=cap.step;
-  else
-    el.step="any";
-
-  if(Number.isFinite(value))
-    el.value=value;
-  else if(Number.isFinite(cap.min))
-    el.value=cap.min;
+ if(Number.isFinite(value))
+  el.value=value;
 }
 
 function fillSelect(el,values,current){
 
-  el.innerHTML="";
+ el.innerHTML="";
 
-  if(!Array.isArray(values)){
-    el.disabled=true;
-    return;
-  }
+ if(!Array.isArray(values)){
+  el.disabled=true;
+  return;
+ }
 
-  el.disabled=false;
+ el.disabled=false;
 
-  values.forEach(v=>{
-    const o=document.createElement("option");
-    o.value=v;
-    o.textContent=v;
-    if(v===current) o.selected=true;
-    el.appendChild(o);
-  });
+ values.forEach(v=>{
+  const o=document.createElement("option");
+  o.value=v;
+  o.textContent=v;
+  o.selected=v===current;
+  el.appendChild(o);
+ });
 }
 
 
-/* =========================
-   CÁMARA
-========================= */
+/* ---------- CAMERA ---------- */
 
 async function startCamera(deviceId=null){
 
-  try{
+ try{
 
-    if(stream){
-      stream.getTracks().forEach(t=>t.stop());
-    }
+  if(stream)
+   stream.getTracks().forEach(t=>t.stop());
 
-    const constraints={
-      audio:false,
-      video:{
-        facingMode: deviceId ? undefined :
-          {ideal:"environment"},
+  stream=await navigator.mediaDevices.getUserMedia({
+   audio:false,
+   video:{
+    facingMode:deviceId ? undefined : {ideal:"environment"},
+    deviceId:deviceId ? {exact:deviceId} : undefined,
+    width:{ideal:4096},
+    height:{ideal:3072}
+   }
+  });
 
-        deviceId: deviceId ?
-          {exact:deviceId} :
-          undefined,
+  video.srcObject=stream;
+  await video.play();
 
-        width:{ideal:4096},
-        height:{ideal:3072}
-      }
-    };
+  track=stream.getVideoTracks()[0];
 
-    stream =
-      await navigator.mediaDevices
-        .getUserMedia(constraints);
+  caps=track.getCapabilities?.() || {};
+  settings=track.getSettings?.() || {};
 
-    video.srcObject=stream;
+  setStatus(
+   `${track.label} · ${settings.width||"?"}×${settings.height||"?"}`
+  );
 
-    await video.play();
+  previousFrame=null;
 
-    track=stream.getVideoTracks()[0];
+  loadControls();
+  configureZoom();
+  await scanDevices();
 
-    caps =
-      track.getCapabilities ?
-      track.getCapabilities() : {};
+  analyzeScene();
 
-    settings =
-      track.getSettings ?
-      track.getSettings() : {};
-
-    setStatus(
-      `${track.label} · `+
-      `${settings.width||"?"}×${settings.height||"?"}`
-    );
-
-    loadControls();
-
-    await scanDevices();
-
-    analyzeScene();
-
-  }catch(err){
-
-    console.error(err);
-
-    setStatus(
-      "Error cámara: "+err.message
-    );
-  }
+ }catch(e){
+  console.error(e);
+  setStatus("Error: "+e.message);
+ }
 }
 
 
 async function scanDevices(){
 
-  try{
+ const all=await navigator.mediaDevices.enumerateDevices();
 
-    const all =
-      await navigator.mediaDevices
-        .enumerateDevices();
+ cameras=all.filter(d=>d.kind==="videoinput");
 
-    cameras =
-      all.filter(d=>d.kind==="videoinput");
+ const box=$("#cameraList");
+ box.innerHTML="";
 
-    const box=$("#cameraList");
-    box.innerHTML="";
+ cameras.forEach((cam,i)=>{
 
-    cameras.forEach((cam,i)=>{
+  const active=settings.deviceId===cam.deviceId;
 
-      const div=document.createElement("div");
+  const d=document.createElement("div");
 
-      div.style.cssText=
-        "padding:10px;border:1px solid #292929;"+
-        "border-radius:10px;margin-bottom:8px";
+  d.style.cssText=
+   "border:1px solid #292929;padding:9px;border-radius:9px;margin-bottom:7px";
 
-      const active =
-        settings.deviceId===cam.deviceId;
+  d.innerHTML=`
+   <b>CAM ${i} — ${cam.label||"Cámara"}</b><br>
+   <span class="small">${active?"ACTIVA":"Disponible"}</span><br><br>
+  `;
 
-      div.innerHTML=`
-        <b>CAM ${i}</b><br>
-        ${cam.label || "Cámara "+i}<br>
-        <span class="small">
-        ${active ? "ACTIVA" : "Disponible"}
-        </span>
-        <br><br>
-      `;
+  const b=document.createElement("button");
 
-      const b=document.createElement("button");
+  b.textContent=active?"ACTIVA":"PROBAR";
+  b.disabled=active;
 
-      b.textContent =
-        active ? "ACTIVA" : "PROBAR";
+  b.onclick=()=>startCamera(cam.deviceId);
 
-      b.disabled=active;
-
-      b.onclick=()=>{
-        startCamera(cam.deviceId);
-      };
-
-      div.appendChild(b);
-
-      box.appendChild(div);
-    });
-
-  }catch(e){
-    console.error(e);
-  }
+  d.appendChild(b);
+  box.appendChild(d);
+ });
 }
 
 
-/* =========================
-   CONTROLES PRO
-========================= */
-
-function loadControls(){
-
-  settings=track.getSettings();
-
-  fillSelect(
-    $("#focusMode"),
-    caps.focusMode,
-    settings.focusMode
-  );
-
-  fillSelect(
-    $("#exposureMode"),
-    caps.exposureMode,
-    settings.exposureMode
-  );
-
-  fillSelect(
-    $("#wbMode"),
-    caps.whiteBalanceMode,
-    settings.whiteBalanceMode
-  );
-
-  setRange(
-    $("#focusDistance"),
-    caps.focusDistance,
-    settings.focusDistance
-  );
-
-  setRange(
-    $("#ev"),
-    caps.exposureCompensation,
-    settings.exposureCompensation
-  );
-
-  setRange(
-    $("#exposureTime"),
-    caps.exposureTime,
-    settings.exposureTime
-  );
-
-  setRange(
-    $("#iso"),
-    caps.iso,
-    settings.iso
-  );
-
-  setRange(
-    $("#colorTemperature"),
-    caps.colorTemperature,
-    settings.colorTemperature
-  );
-
-  updateLabels();
-
-  $("#diag").textContent=
-    JSON.stringify({
-      label:track.label,
-      settings,
-      capabilities:caps
-    },null,2);
-}
-
+/* ---------- APPLY ---------- */
 
 async function applyAdvanced(obj){
 
-  if(!track) return false;
+ if(!track) return false;
 
-  try{
+ try{
 
-    await track.applyConstraints({
-      advanced:[obj]
-    });
+  await track.applyConstraints({
+   advanced:[obj]
+  });
 
-    settings=track.getSettings();
+  settings=track.getSettings?.() || {};
 
-    loadControls();
+  return true;
 
-    return true;
+ }catch(e){
 
-  }catch(e){
+  console.warn("Rechazado:",obj,e);
 
-    console.warn(
-      "Constraint rechazada",
-      obj,
-      e
-    );
+  return false;
+ }
+}
 
-    return false;
+
+/* ---------- ZOOM ---------- */
+
+function configureZoom(){
+
+ settings=track.getSettings?.() || {};
+
+ if(
+  caps.zoom &&
+  Number.isFinite(caps.zoom.min) &&
+  Number.isFinite(caps.zoom.max)
+ ){
+
+  zoomMethod="native";
+
+  $("#zoomType").textContent="NATIVO";
+
+  $("#zoomRange").textContent=
+   `${caps.zoom.min}× — ${caps.zoom.max}×`;
+
+  $("#zoomSlider").min=caps.zoom.min;
+  $("#zoomSlider").max=caps.zoom.max;
+  $("#zoomSlider").step=
+   caps.zoom.step>0 ? caps.zoom.step : .1;
+
+  currentZoom=settings.zoom || caps.zoom.min || 1;
+
+ }else{
+
+  zoomMethod="digital";
+
+  $("#zoomType").textContent="DIGITAL";
+
+  $("#zoomRange").textContent=
+   "Hardware zoom no expuesto por navegador";
+
+  $("#zoomSlider").min=1;
+  $("#zoomSlider").max=10;
+  $("#zoomSlider").step=.1;
+
+  currentZoom=1;
+ }
+
+ $("#zoomSlider").value=currentZoom;
+
+ updateZoomUI();
+}
+
+
+async function setZoom(z){
+
+ z=Number(z);
+
+ if(zoomMethod==="native"){
+
+  z=clamp(z,caps.zoom.min,caps.zoom.max);
+
+  const ok=await applyAdvanced({zoom:z});
+
+  settings=track.getSettings?.() || {};
+
+  if(ok && Number.isFinite(settings.zoom)){
+   currentZoom=settings.zoom;
+  }else{
+   currentZoom=z;
   }
+
+  /*
+   En zoom nativo NO escalamos el video.
+  */
+  video.style.transform="scale(1)";
+
+ }else{
+
+  /*
+   0.5x real no puede crearse mediante recorte.
+   Si no existe hardware ultrawide expuesto,
+   lo dejamos en 1x.
+  */
+
+  if(z<1){
+   z=1;
+  }
+
+  currentZoom=clamp(z,1,10);
+
+  video.style.transform=
+   `scale(${currentZoom})`;
+ }
+
+ $("#zoomSlider").value=currentZoom;
+
+ updateZoomUI();
+}
+
+
+function updateZoomUI(){
+
+ $("#zoomValue").textContent=
+  currentZoom.toFixed(1)+"×";
+
+ $("#zoomHUD").textContent=
+  currentZoom.toFixed(1)+"×";
+
+ document
+  .querySelectorAll("[data-z]")
+  .forEach(b=>{
+   b.classList.toggle(
+    "active",
+    Math.abs(Number(b.dataset.z)-currentZoom)<.06
+   );
+  });
+}
+
+
+document.querySelectorAll("[data-z]").forEach(b=>{
+ b.onclick=()=>setZoom(b.dataset.z);
+});
+
+$("#zoomSlider").oninput=e=>{
+ setZoom(e.target.value);
+};
+
+
+/* ---------- PRO CONTROLS ---------- */
+
+function loadControls(){
+
+ settings=track.getSettings?.() || {};
+
+ fillSelect($("#focusMode"),caps.focusMode,settings.focusMode);
+ fillSelect($("#exposureMode"),caps.exposureMode,settings.exposureMode);
+ fillSelect($("#wbMode"),caps.whiteBalanceMode,settings.whiteBalanceMode);
+
+ setRange($("#focusDistance"),caps.focusDistance,settings.focusDistance);
+ setRange($("#ev"),caps.exposureCompensation,settings.exposureCompensation);
+ setRange($("#exposureTime"),caps.exposureTime,settings.exposureTime);
+ setRange($("#iso"),caps.iso,settings.iso);
+ setRange($("#colorTemperature"),caps.colorTemperature,settings.colorTemperature);
+
+ updateLabels();
+ updateDiag();
 }
 
 
 function updateLabels(){
 
-  $("#focusLabel").textContent =
-    "Distancia de enfoque: "+
-    ($("#focusDistance").value||"--");
+ $("#focusLabel").textContent=
+  "Distancia enfoque: "+($("#focusDistance").value||"--");
 
-  $("#evLabel").textContent =
-    "Compensación EV: "+
-    ($("#ev").value||"--");
+ $("#evLabel").textContent=
+  "EV: "+($("#ev").value||"--");
 
-  $("#expLabel").textContent =
-    "Tiempo de exposición: "+
-    ($("#exposureTime").value||"--");
+ $("#expLabel").textContent=
+  "Tiempo exposición: "+($("#exposureTime").value||"--");
 
-  $("#isoLabel").textContent =
-    "ISO: "+
-    ($("#iso").value||"--");
+ $("#isoLabel").textContent=
+  "ISO: "+($("#iso").value||"--");
 
-  $("#tempLabel").textContent =
-    "Temperatura de color: "+
-    ($("#colorTemperature").value||"--");
+ $("#tempLabel").textContent=
+  "Temperatura color: "+($("#colorTemperature").value||"--");
 }
 
 
-$("#focusMode").onchange=e=>
-  applyAdvanced({
-    focusMode:e.target.value
-  });
+function updateDiag(){
 
-$("#exposureMode").onchange=e=>
-  applyAdvanced({
-    exposureMode:e.target.value
-  });
+ if(!track) return;
 
-$("#wbMode").onchange=e=>
-  applyAdvanced({
-    whiteBalanceMode:e.target.value
-  });
+ settings=track.getSettings?.() || {};
 
+ $("#diag").textContent=JSON.stringify({
+  label:track.label,
+  zoomMethod,
+  currentZoom,
+  settings,
+  capabilities:caps
+ },null,2);
+}
+
+
+$("#focusMode").onchange=e=>applyAdvanced({focusMode:e.target.value});
+$("#exposureMode").onchange=e=>applyAdvanced({exposureMode:e.target.value});
+$("#wbMode").onchange=e=>applyAdvanced({whiteBalanceMode:e.target.value});
 
 $("#focusDistance").onchange=e=>
-  applyAdvanced({
-    focusDistance:Number(e.target.value)
-  });
+ applyAdvanced({focusDistance:Number(e.target.value)});
 
 $("#ev").onchange=e=>
-  applyAdvanced({
-    exposureCompensation:Number(e.target.value)
-  });
+ applyAdvanced({exposureCompensation:Number(e.target.value)});
 
 $("#exposureTime").onchange=e=>
-  applyAdvanced({
-    exposureTime:Number(e.target.value)
-  });
+ applyAdvanced({exposureTime:Number(e.target.value)});
 
 $("#iso").onchange=e=>
-  applyAdvanced({
-    iso:Number(e.target.value)
-  });
+ applyAdvanced({iso:Number(e.target.value)});
 
 $("#colorTemperature").onchange=e=>
-  applyAdvanced({
-    colorTemperature:Number(e.target.value)
-  });
-
+ applyAdvanced({colorTemperature:Number(e.target.value)});
 
 [
- "#focusDistance",
- "#ev",
- "#exposureTime",
- "#iso",
- "#colorTemperature"
+ "#focusDistance","#ev","#exposureTime",
+ "#iso","#colorTemperature"
 ].forEach(id=>{
-
-  $(id).addEventListener(
-    "input",
-    updateLabels
-  );
-
+ $(id).addEventListener("input",updateLabels);
 });
 
 
-/* =========================
-   ANALIZADOR DE ESCENA
-========================= */
+/* ---------- IMAGE ANALYSIS ---------- */
+
+function getFrame(){
+
+ if(!video.videoWidth) return null;
+
+ const c=$("#analysisCanvas");
+ const ctx=c.getContext("2d",{willReadFrequently:true});
+
+ c.width=240;
+ c.height=180;
+
+ /*
+   Para el análisis usamos el frame completo del stream.
+   El zoom digital se tiene en cuenta posteriormente.
+ */
+
+ ctx.drawImage(video,0,0,c.width,c.height);
+
+ return ctx.getImageData(0,0,c.width,c.height);
+}
+
+
+function measureMovement(image){
+
+ if(!previousFrame){
+  previousFrame=new Uint8ClampedArray(image.data);
+  return 0;
+ }
+
+ let diff=0;
+ let n=0;
+
+ /*
+   Comparación de luminancia entre frames.
+  */
+
+ for(let i=0;i<image.data.length;i+=64){
+
+  const now=
+   .2126*image.data[i]+
+   .7152*image.data[i+1]+
+   .0722*image.data[i+2];
+
+  const old=
+   .2126*previousFrame[i]+
+   .7152*previousFrame[i+1]+
+   .0722*previousFrame[i+2];
+
+  diff+=Math.abs(now-old);
+  n++;
+ }
+
+ previousFrame.set(image.data);
+
+ return n ? diff/n : 0;
+}
+
 
 function analyzeScene(){
 
-  if(!video.videoWidth) return;
+ const image=getFrame();
+ if(!image) return;
 
-  const canvas=$("#analysisCanvas");
-  const ctx=canvas.getContext(
-    "2d",
-    {willReadFrequently:true}
+ const data=image.data;
+
+ let sum=0,sumSq=0,dark=0,bright=0,count=0;
+
+ const hist=new Array(256).fill(0);
+
+ for(let i=0;i<data.length;i+=16){
+
+  const lum=Math.round(
+   .2126*data[i]+
+   .7152*data[i+1]+
+   .0722*data[i+2]
   );
 
-  const w=320;
-  const h=240;
+  hist[lum]++;
+  sum+=lum;
+  sumSq+=lum*lum;
 
-  canvas.width=w;
-  canvas.height=h;
+  if(lum<45) dark++;
+  if(lum>220) bright++;
 
-  ctx.drawImage(video,0,0,w,h);
+  count++;
+ }
 
-  const data=
-    ctx.getImageData(0,0,w,h).data;
+ const mean=sum/count;
 
-  let sum=0;
-  let sumSq=0;
-  let dark=0;
-  let bright=0;
+ const variance=
+  Math.max(0,sumSq/count-mean*mean);
 
-  const histogram =
-    new Array(256).fill(0);
+ const std=Math.sqrt(variance);
 
-  let count=0;
+ const darkPct=dark/count*100;
+ const brightPct=bright/count*100;
 
-  /*
-    Muestreo parcial para reducir
-    carga sobre el teléfono.
+ movementScore=measureMovement(image);
+
+ /*
+   A mayor zoom digital, amplificamos el riesgo
+   fotográfico del movimiento.
   */
 
-  for(let i=0;i<data.length;i+=16){
+ const zoomPenalty=
+  zoomMethod==="digital"
+  ? Math.max(1,currentZoom)
+  : Math.sqrt(Math.max(1,currentZoom));
 
-    const r=data[i];
-    const g=data[i+1];
-    const b=data[i+2];
+ const effectiveMovement=
+  movementScore*zoomPenalty;
 
-    const lum =
-      Math.round(
-        0.2126*r +
-        0.7152*g +
-        0.0722*b
-      );
+ stabilityScore=
+  clamp(100-effectiveMovement*6,0,100);
 
-    histogram[lum]++;
+ let scene="Luz normal";
 
-    sum+=lum;
-    sumSq+=lum*lum;
+ if(mean<45) scene="Muy poca luz";
+ else if(mean<80) scene="Poca luz";
+ else if(darkPct>25 && brightPct>8) scene="Contraluz";
+ else if(mean>205) scene="Muy luminosa";
+ else if(std>75) scene="Alto contraste";
+ else if(std<30) scene="Bajo contraste";
 
-    if(lum<45) dark++;
-    if(lum>220) bright++;
+ lastAnalysis={
+  mean,std,darkPct,brightPct,
+  movement:effectiveMovement,
+  stability:stabilityScore,
+  scene,hist
+ };
 
-    count++;
-  }
+ $("#brightness").textContent=Math.round(mean);
+ $("#contrast").textContent=Math.round(std);
+ $("#shadows").textContent=darkPct.toFixed(1)+"%";
+ $("#highlights").textContent=brightPct.toFixed(1)+"%";
+ $("#movement").textContent=effectiveMovement.toFixed(1);
+ $("#stability").textContent=Math.round(stabilityScore)+"%";
 
-  const mean=sum/count;
+ $("#sceneName").textContent=scene;
+ $("#sceneMini").textContent=scene;
 
-  const variance=
-    Math.max(
-      0,
-      sumSq/count -
-      mean*mean
-    );
+ drawHistogram(hist);
+ updateStability();
+ createRecommendation();
 
-  const std=
-    Math.sqrt(variance);
-
-  const darkPct=
-    dark/count*100;
-
-  const brightPct=
-    bright/count*100;
-
-  let scene="Luz normal";
-
-  if(mean<45)
-    scene="Muy poca luz";
-
-  else if(mean<80)
-    scene="Poca luz";
-
-  else if(
-    darkPct>25 &&
-    brightPct>8
-  )
-    scene="Contraluz";
-
-  else if(mean>205)
-    scene="Escena muy luminosa";
-
-  else if(std>75)
-    scene="Alto contraste";
-
-  else if(std<30)
-    scene="Bajo contraste";
-
-
-  lastAnalysis={
-    mean,
-    std,
-    darkPct,
-    brightPct,
-    histogram,
-    scene
-  };
-
-
-  $("#brightness").textContent=
-    Math.round(mean);
-
-  $("#contrast").textContent=
-    Math.round(std);
-
-  $("#shadows").textContent=
-    darkPct.toFixed(1)+"%";
-
-  $("#highlights").textContent=
-    brightPct.toFixed(1)+"%";
-
-  $("#sceneName").textContent=scene;
-
-  $("#lightMini").textContent=
-    Math.round(mean)+"/255";
-
-  $("#sceneMini").textContent=scene;
-
-  $("#aiState").textContent=
-    mode==="manual" ?
-    "manual" :
-    "analizado";
-
-
-  drawHistogram(histogram);
-
-  createRecommendation();
-
-  if(mode==="auto"){
-    applyAI();
-  }
+ if(mode==="auto"){
+  applyAI(false);
+ }
 }
 
 
 function drawHistogram(hist){
 
-  const c=$("#histogram");
-  const ctx=c.getContext("2d");
+ const c=$("#histogram");
+ const ctx=c.getContext("2d");
 
-  const w=c.width;
-  const h=c.height;
+ ctx.clearRect(0,0,c.width,c.height);
 
-  ctx.clearRect(0,0,w,h);
+ const max=Math.max(...hist);
 
-  const max=Math.max(...hist);
+ ctx.fillStyle="#8de6a9";
 
-  ctx.fillStyle="#8de6a9";
+ hist.forEach((v,i)=>{
 
-  for(let i=0;i<256;i++){
+  const h=max ? v/max*c.height : 0;
 
-    const x=
-      i/255*w;
-
-    const bh=
-      max ?
-      hist[i]/max*h :
-      0;
-
-    ctx.fillRect(
-      x,
-      h-bh,
-      Math.max(1,w/256),
-      bh
-    );
-  }
+  ctx.fillRect(
+   i/255*c.width,
+   c.height-h,
+   Math.max(1,c.width/256),
+   h
+  );
+ });
 }
 
 
-/* =========================
-   MOTOR AI
-========================= */
+/* ---------- STABILITY ---------- */
+
+function updateStability(){
+
+ const el=$("#stabilityState");
+
+ if(stabilityScore>=85){
+
+  el.textContent="● ESTABLE "+Math.round(stabilityScore)+"%";
+  el.className="good";
+
+ }else if(stabilityScore>=60){
+
+  el.textContent="◐ MOVIMIENTO LEVE "+Math.round(stabilityScore)+"%";
+  el.className="bad";
+
+ }else{
+
+  el.textContent="● MOVIMIENTO "+Math.round(stabilityScore)+"%";
+  el.className="bad";
+ }
+
+ /*
+   Disparo solicitado cuando quede estable.
+  */
+
+ if(waitingStableShot && stabilityScore>=88){
+
+  waitingStableShot=false;
+
+  $("#stableShotBtn").textContent="◎ FOTO ESTABLE";
+
+  takePhoto();
+ }
+}
+
+
+function startStabilityMonitor(){
+
+ clearInterval(stabilityTimer);
+
+ stabilityTimer=setInterval(()=>{
+  if(video.videoWidth){
+   analyzeScene();
+  }
+ },700);
+}
+
+
+function requestStableShot(){
+
+ waitingStableShot=true;
+
+ $("#stableShotBtn").textContent=
+  "ESPERANDO ESTABILIDAD…";
+
+ analyzeScene();
+}
+
+
+/* ---------- AI ---------- */
 
 function calculateAI(){
 
-  if(!lastAnalysis)
-    return {};
+ if(!lastAnalysis) return {};
 
-  const a=lastAnalysis;
+ const a=lastAnalysis;
+ const r={};
 
-  const result={};
+ if(caps.exposureCompensation){
+
+  let ev=0;
+
+  if(a.mean<45) ev=1;
+  else if(a.mean<80) ev=.5;
+  else if(a.scene==="Contraluz") ev=.5;
+  else if(a.mean>205) ev=-1;
+  else if(a.mean>175) ev=-.5;
 
   /*
-    EV
+   Con mucho movimiento evitamos una corrección
+   excesiva de exposición.
   */
 
-  if(caps.exposureCompensation){
+  if(a.stability<55 && ev>0)
+   ev=Math.min(ev,.5);
 
-    let ev=0;
+  r.exposureCompensation=
+   clamp(
+    ev,
+    caps.exposureCompensation.min,
+    caps.exposureCompensation.max
+   );
+ }
 
-    if(a.mean<45)
-      ev=1;
+ if(caps.iso){
 
-    else if(a.mean<80)
-      ev=.5;
-
-    else if(a.scene==="Contraluz")
-      ev=.5;
-
-    else if(a.mean>205)
-      ev=-1;
-
-    else if(a.mean>175)
-      ev=-.5;
-
-    ev=clamp(
-      ev,
-      caps.exposureCompensation.min,
-      caps.exposureCompensation.max
-    );
-
-    result.exposureCompensation=ev;
-  }
-
+  let iso;
 
   /*
-    ISO
+   Ahora usamos luz + estabilidad.
   */
 
-  if(caps.iso){
-
-    let iso;
-
-    if(a.mean<40)
-      iso=800;
-
-    else if(a.mean<70)
-      iso=400;
-
-    else if(a.mean<110)
-      iso=200;
-
-    else
-      iso=100;
-
-    iso=clamp(
-      iso,
-      caps.iso.min,
-      caps.iso.max
-    );
-
-    result.iso=iso;
+  if(a.mean<40){
+   iso=a.stability>80 ? 400 : 800;
+  }
+  else if(a.mean<70){
+   iso=a.stability>80 ? 200 : 400;
+  }
+  else if(a.mean<110){
+   iso=200;
+  }
+  else{
+   iso=100;
   }
 
-
   /*
-    Enfoque
+   Zoom aumenta sensibilidad al movimiento.
   */
 
   if(
-    Array.isArray(caps.focusMode) &&
-    caps.focusMode.includes("continuous")
+   currentZoom>=3 &&
+   a.stability<70
   ){
-    result.focusMode="continuous";
+   iso*=2;
   }
 
+  r.iso=
+   clamp(iso,caps.iso.min,caps.iso.max);
+ }
 
-  /*
-    Exposición
-  */
+ if(
+  Array.isArray(caps.focusMode) &&
+  caps.focusMode.includes("continuous")
+ ){
+  r.focusMode="continuous";
+ }
 
-  if(
-    Array.isArray(caps.exposureMode) &&
-    caps.exposureMode.includes("continuous")
-  ){
-    result.exposureMode="continuous";
-  }
+ if(
+  Array.isArray(caps.exposureMode) &&
+  caps.exposureMode.includes("continuous")
+ ){
+  r.exposureMode="continuous";
+ }
 
+ if(
+  Array.isArray(caps.whiteBalanceMode) &&
+  caps.whiteBalanceMode.includes("continuous")
+ ){
+  r.whiteBalanceMode="continuous";
+ }
 
-  /*
-    Balance de blancos
-  */
-
-  if(
-    Array.isArray(caps.whiteBalanceMode) &&
-    caps.whiteBalanceMode.includes("continuous")
-  ){
-    result.whiteBalanceMode=
-      "continuous";
-  }
-
-
-  return result;
+ return r;
 }
 
 
 function createRecommendation(){
 
-  const r=calculateAI();
+ if(!lastAnalysis) return;
 
-  let html=
-    "<b>Recomendación AI PRO</b><br>";
+ const r=calculateAI();
+ const a=lastAnalysis;
 
-  html+=
-    "Escena: "+
-    lastAnalysis.scene+
-    "<br>";
+ let h="<b>Recomendación AI PRO</b><br>";
 
-  if(
-    r.exposureCompensation!==undefined
-  )
-    html+=
-      "EV recomendado: "+
-      r.exposureCompensation+
-      "<br>";
+ h+=`Escena: ${a.scene}<br>`;
+ h+=`Estabilidad: ${Math.round(a.stability)}%<br>`;
+ h+=`Zoom: ${currentZoom.toFixed(1)}× (${zoomMethod.toUpperCase()})<br>`;
 
-  if(r.iso!==undefined)
-    html+=
-      "ISO objetivo: "+
-      Math.round(r.iso)+
-      "<br>";
+ if(r.iso!==undefined)
+  h+=`ISO recomendado: ${Math.round(r.iso)}<br>`;
 
-  if(r.focusMode)
-    html+=
-      "Enfoque: "+
-      r.focusMode+
-      "<br>";
+ if(r.exposureCompensation!==undefined)
+  h+=`EV recomendado: ${r.exposureCompensation}<br>`;
 
-  if(r.exposureMode)
-    html+=
-      "Exposición: "+
-      r.exposureMode+
-      "<br>";
+ if(r.focusMode)
+  h+=`Enfoque: ${r.focusMode}<br>`;
 
-  if(r.whiteBalanceMode)
-    html+=
-      "Balance blancos: "+
-      r.whiteBalanceMode+
-      "<br>";
+ if(currentZoom>=3 && zoomMethod==="digital")
+  h+="<br>⚠ Zoom digital alto: disminuye el detalle efectivo y amplifica el movimiento.";
 
-  if(lastAnalysis.mean<60)
-    html+=
-      "<br>💡 Luz muy baja: "+
-      "considerá Torch si el sujeto está cerca.";
+ if(a.mean<60 && a.stability>80)
+  h+="<br>💡 Poca luz pero cámara estable: podemos priorizar ISO más bajo.";
 
-  if(lastAnalysis.brightPct>15)
-    html+=
-      "<br>⚠️ Muchas altas luces: "+
-      "evitar sobreexposición.";
+ if(a.mean<60 && a.stability<60)
+  h+="<br>⚠ Poca luz + movimiento: conviene evitar una exposición demasiado larga.";
 
-  $("#recommendation").innerHTML=html;
+ if(a.brightPct>15)
+  h+="<br>⚠ Riesgo de altas luces quemadas.";
+
+ $("#recommendation").innerHTML=h;
 }
 
 
-async function applyAI(){
+async function applyAI(showResult=true){
 
-  if(!lastAnalysis)
-    analyzeScene();
+ if(!lastAnalysis)
+  analyzeScene();
 
-  const r=calculateAI();
+ const r=calculateAI();
 
-  $("#aiState").textContent=
-    "aplicando…";
+ $("#aiState").textContent="aplicando";
 
-  /*
-    Aplicamos primero modos automáticos.
-  */
+ if(r.focusMode)
+  await applyAdvanced({focusMode:r.focusMode});
 
-  if(r.focusMode)
-    await applyAdvanced({
-      focusMode:r.focusMode
-    });
+ if(r.exposureMode)
+  await applyAdvanced({exposureMode:r.exposureMode});
 
-  if(r.exposureMode)
-    await applyAdvanced({
-      exposureMode:r.exposureMode
-    });
+ if(r.whiteBalanceMode)
+  await applyAdvanced({whiteBalanceMode:r.whiteBalanceMode});
 
-  if(r.whiteBalanceMode)
-    await applyAdvanced({
-      whiteBalanceMode:
-        r.whiteBalanceMode
-    });
+ if(r.exposureCompensation!==undefined)
+  await applyAdvanced({
+   exposureCompensation:r.exposureCompensation
+  });
 
+ if(r.iso!==undefined)
+  await applyAdvanced({iso:r.iso});
 
-  /*
-    Luego ajustes numéricos.
-    Cada uno se prueba por separado.
-  */
+ settings=track.getSettings?.() || {};
 
-  if(
-    r.exposureCompensation !==
-    undefined
-  ){
-    await applyAdvanced({
-      exposureCompensation:
-        r.exposureCompensation
-    });
-  }
+ $("#aiState").textContent=
+  mode==="auto" ? "AUTO" : "AI PRO";
 
+ loadControls();
 
-  /*
-    ISO puede ser rechazado por algunos
-    navegadores mientras exposición esté
-    en modo continuous.
+ if(showResult){
 
-    Lo intentamos pero no rompemos
-    la cámara si Chrome lo rechaza.
-  */
-
-  if(r.iso!==undefined){
-
-    await applyAdvanced({
-      iso:r.iso
-    });
-  }
-
-  settings=track.getSettings();
-
-  $("#aiState").textContent=
-    "aplicada";
-
-  $("#recommendation").innerHTML+=
-    "<br><br><b>Ajustes comprobados:</b><br>"+
-    "ISO real: "+
-    (settings.iso ?? "no informado")+
-    "<br>EV real: "+
-    (settings.exposureCompensation ??
-     "no informado")+
-    "<br>Enfoque real: "+
-    (settings.focusMode ??
-     "no informado");
-
-  loadControls();
+  $("#recommendation").innerHTML+=`
+   <br><br><b>Ajustes comprobados:</b><br>
+   ISO real: ${settings.iso ?? "no informado"}<br>
+   EV real: ${settings.exposureCompensation ?? "no informado"}<br>
+   Enfoque real: ${settings.focusMode ?? "no informado"}<br>
+   Zoom informado: ${settings.zoom ?? "no expuesto"}
+  `;
+ }
 }
 
 
-/* =========================
-   TORCH
-========================= */
+/* ---------- TORCH ---------- */
 
 async function toggleTorch(){
 
-  if(!caps.torch){
+ if(!caps.torch){
+  alert("Torch no está disponible en esta cámara.");
+  return;
+ }
 
-    alert(
-      "La cámara activa no expone Torch."
-    );
+ torchOn=!torchOn;
 
-    return;
-  }
+ const ok=await applyAdvanced({
+  torch:torchOn
+ });
 
-  torchOn=!torchOn;
+ if(!ok) torchOn=false;
 
-  const ok=
-    await applyAdvanced({
-      torch:torchOn
-    });
-
-  if(!ok)
-    torchOn=false;
-
-  $("#torchBtn").textContent=
-    torchOn ?
-    "⚡ TORCH ON" :
-    "⚡ TORCH";
+ $("#torchBtn").textContent=
+  torchOn ? "⚡ ON" : "⚡ TORCH";
 }
 
 
-/* =========================
-   CAPTURA
-========================= */
+/* ---------- PHOTO ---------- */
 
 async function takePhoto(){
 
-  if(!video.videoWidth) return;
+ if(!video.videoWidth) return;
 
-  flash();
+ flash();
 
-  /*
-    Capturamos exactamente la resolución
-    que está entregando el stream.
+ const c=$("#captureCanvas");
+ const ctx=c.getContext("2d");
+
+ /*
+   Captura con zoom digital real:
+   recortamos el frame original en vez de
+   guardar simplemente el CSS ampliado.
   */
 
-  const canvas=$("#captureCanvas");
+ const vw=video.videoWidth;
+ const vh=video.videoHeight;
 
-  canvas.width=
-    video.videoWidth;
+ c.width=vw;
+ c.height=vh;
 
-  canvas.height=
-    video.videoHeight;
+ if(
+  zoomMethod==="digital" &&
+  currentZoom>1
+ ){
 
-  const ctx=canvas.getContext("2d");
+  const sw=vw/currentZoom;
+  const sh=vh/currentZoom;
+
+  const sx=(vw-sw)/2;
+  const sy=(vh-sh)/2;
 
   ctx.drawImage(
-    video,
-    0,0,
-    canvas.width,
-    canvas.height
+   video,
+   sx,sy,sw,sh,
+   0,0,vw,vh
   );
 
-  photoBlob=
-    await new Promise(resolve=>
-      canvas.toBlob(
-        resolve,
-        "image/jpeg",
-        .95
-      )
-    );
+ }else{
 
-  const url=
-    URL.createObjectURL(photoBlob);
+  ctx.drawImage(
+   video,
+   0,0,vw,vh
+  );
+ }
 
-  const img=$("#photoPreview");
+ photoBlob=await new Promise(resolve=>
+  c.toBlob(resolve,"image/jpeg",.96)
+ );
 
-  img.src=url;
-  img.classList.remove("hidden");
+ const url=URL.createObjectURL(photoBlob);
 
-  $("#savePhoto")
-    .classList.remove("hidden");
+ $("#photoPreview").src=url;
+ $("#photoPreview").classList.remove("hidden");
+ $("#savePhoto").classList.remove("hidden");
 
-  settings=track.getSettings();
+ settings=track.getSettings?.() || {};
 
-  $("#photoInfo").innerHTML=
-    `Captura: ${canvas.width}×${canvas.height}<br>`+
-    `ISO: ${settings.iso ?? "?"} · `+
-    `EV: ${settings.exposureCompensation ?? "?"}<br>`+
-    `Enfoque: ${settings.focusMode ?? "?"}`;
+ $("#photoInfo").innerHTML=`
+  ${vw}×${vh}<br>
+  Zoom: ${currentZoom.toFixed(1)}× — ${zoomMethod.toUpperCase()}<br>
+  ISO: ${settings.iso ?? "?"} ·
+  EV: ${settings.exposureCompensation ?? "?"}<br>
+  Estabilidad: ${Math.round(stabilityScore)}%
+ `;
 }
 
 
 function savePhoto(){
 
-  if(!photoBlob) return;
+ if(!photoBlob) return;
 
-  const a=document.createElement("a");
+ const a=document.createElement("a");
 
-  a.href=
-    URL.createObjectURL(photoBlob);
+ a.href=URL.createObjectURL(photoBlob);
 
-  const now=new Date();
+ const d=new Date();
 
-  const name=
-    "Pura80_AI_"+
-    now.getFullYear()+
-    String(now.getMonth()+1)
-      .padStart(2,"0")+
-    String(now.getDate())
-      .padStart(2,"0")+
-    "_"+
-    String(now.getHours())
-      .padStart(2,"0")+
-    String(now.getMinutes())
-      .padStart(2,"0")+
-    String(now.getSeconds())
-      .padStart(2,"0")+
-    ".jpg";
+ a.download=
+  `Pura80_AI_${d.getFullYear()}-${
+   String(d.getMonth()+1).padStart(2,"0")
+  }-${
+   String(d.getDate()).padStart(2,"0")
+  }_${
+   String(d.getHours()).padStart(2,"0")
+  }-${
+   String(d.getMinutes()).padStart(2,"0")
+  }.jpg`;
 
-  a.download=name;
+ a.click();
 
-  a.click();
-
-  setTimeout(
-    ()=>URL.revokeObjectURL(a.href),
-    1000
-  );
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
 
-/* =========================
-   MODOS
-========================= */
+/* ---------- MODES ---------- */
 
 function setMode(m){
 
-  mode=m;
+ mode=m;
 
-  $("#autoMode")
-    .classList.toggle(
-      "active",
-      m==="auto"
-    );
+ $("#autoMode").classList.toggle("active",m==="auto");
+ $("#proMode").classList.toggle("active",m==="pro");
+ $("#manualMode").classList.toggle("active",m==="manual");
 
-  $("#proMode")
-    .classList.toggle(
-      "active",
-      m==="pro"
-    );
+ clearInterval(autoTimer);
 
-  $("#manualMode")
-    .classList.toggle(
-      "active",
-      m==="manual"
-    );
+ if(m==="auto"){
 
-  clearInterval(autoTimer);
+  $("#aiState").textContent="AUTO";
 
-  if(m==="auto"){
+  autoTimer=setInterval(()=>{
+   analyzeScene();
+  },3000);
 
-    $("#aiState").textContent=
-      "AUTO";
+ }else if(m==="pro"){
 
-    autoTimer=setInterval(
-      analyzeScene,
-      3000
-    );
+  $("#aiState").textContent="AI PRO";
 
-    analyzeScene();
+ }else{
 
-  }else if(m==="pro"){
-
-    $("#aiState").textContent=
-      "AI PRO";
-
-  }else{
-
-    $("#aiState").textContent=
-      "MANUAL";
-  }
+  $("#aiState").textContent="MANUAL";
+ }
 }
 
 
-/* =========================
-   EVENTOS
-========================= */
+/* ---------- EVENTS ---------- */
 
-$("#scanBtn").onclick=
-  scanDevices;
+$("#scanBtn").onclick=scanDevices;
+$("#analyzeBtn").onclick=analyzeScene;
+$("#applyBtn").onclick=()=>applyAI(true);
+$("#photoBtn").onclick=takePhoto;
+$("#stableShotBtn").onclick=requestStableShot;
+$("#torchBtn").onclick=toggleTorch;
+$("#savePhoto").onclick=savePhoto;
 
-$("#analyzeBtn").onclick=
-  analyzeScene;
+$("#autoMode").onclick=()=>setMode("auto");
+$("#proMode").onclick=()=>setMode("pro");
+$("#manualMode").onclick=()=>setMode("manual");
 
-$("#applyBtn").onclick=
-  applyAI;
-
-$("#photoBtn").onclick=
-  takePhoto;
-
-$("#torchBtn").onclick=
-  toggleTorch;
-
-$("#savePhoto").onclick=
-  savePhoto;
-
-$("#autoMode").onclick=
-  ()=>setMode("auto");
-
-$("#proMode").onclick=
-  ()=>setMode("pro");
-
-$("#manualMode").onclick=
-  ()=>setMode("manual");
+navigator.mediaDevices?.addEventListener(
+ "devicechange",
+ scanDevices
+);
 
 
-navigator.mediaDevices
-  ?.addEventListener(
-    "devicechange",
-    scanDevices
-  );
-
-
-/* =========================
-   INICIO
-========================= */
+/* ---------- START ---------- */
 
 (async()=>{
 
-  if(
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
-  ){
+ if(!navigator.mediaDevices?.getUserMedia){
 
-    setStatus(
-      "Este navegador no soporta getUserMedia."
-    );
+  setStatus(
+   "getUserMedia no disponible."
+  );
 
-    return;
-  }
+  return;
+ }
 
-  await startCamera();
+ await startCamera();
+
+ startStabilityMonitor();
 
 })();
-
 </script>
 
 </body>
