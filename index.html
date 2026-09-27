@@ -4,937 +4,1522 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>Pura 80 Camera Lab V2</title>
+
+<title>Pura 80 Camera Lab V3</title>
 
 <style>
 *{box-sizing:border-box}
+
 html,body{
   margin:0;
   background:#050505;
-  color:#eee;
-  font-family:system-ui,-apple-system,sans-serif
+  color:#fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
-body{min-height:100vh}
-.app{
+
+body{
   min-height:100vh;
-  display:flex;
-  flex-direction:column
 }
+
 header{
+  height:54px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:10px 12px;
-  background:#090909;
-  border-bottom:1px solid #222
+  padding:0 12px;
+  border-bottom:1px solid #222;
+  background:#080808;
+  position:sticky;
+  top:0;
+  z-index:20;
 }
-.title{font-weight:700}
+
+.title{
+  font-weight:800;
+  font-size:14px;
+}
+
 .badge{
-  font-size:12px;
-  border:1px solid #444;
+  display:inline-block;
+  margin-left:7px;
+  padding:5px 8px;
+  border:1px solid #333;
   border-radius:8px;
-  padding:4px 7px
+  font-size:11px;
+  color:#8ef0b2;
 }
-.stage{
+
+.preview{
   position:relative;
   background:#000;
-  min-height:48vh;
+  width:100%;
+  min-height:420px;
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:hidden
+  overflow:hidden;
 }
+
 video{
   width:100%;
-  height:100%;
-  max-height:62vh;
+  max-height:70vh;
   object-fit:contain;
-  background:#000
+  background:#000;
 }
+
 .status{
   position:absolute;
   top:10px;
   left:10px;
   right:10px;
   text-align:center;
+  color:#77e79e;
   font-size:12px;
-  text-shadow:0 1px 3px #000
+  text-shadow:0 1px 3px #000;
 }
-.toolbar{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  padding:10px;
-  background:#0b0b0b;
-  border-top:1px solid #222;
-  border-bottom:1px solid #222
-}
-button,select,input{font:inherit}
-button{
-  background:#181818;
-  color:#fff;
-  border:1px solid #444;
+
+.aiOverlay{
+  position:absolute;
+  left:10px;
+  bottom:10px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(8px);
+  padding:8px 10px;
   border-radius:10px;
-  padding:10px 13px
-}
-button.primary{
-  background:#eee;
-  color:#111;
-  border-color:#eee
-}
-button:disabled{opacity:.45}
-.panel{padding:12px}
-.card{
-  background:#101010;
-  border:1px solid #303030;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:10px
-}
-.camhead{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  align-items:flex-start
-}
-.camname{
-  font-weight:700;
-  word-break:break-word
-}
-.small{
   font-size:12px;
-  color:#aaa
+  line-height:1.45;
+  border:1px solid #333;
 }
-.kv{
-  margin-top:8px;
-  font:12px ui-monospace,SFMono-Regular,monospace;
-  color:#c9e7ff;
-  white-space:pre-wrap;
-  word-break:break-word
-}
+
 .controls{
-  display:grid;
-  gap:12px
+  padding:10px;
 }
-.control label{
-  display:block;
-  font-size:12px;
-  color:#aaa;
-  margin-bottom:5px
-}
-.control input[type=range]{width:100%}
+
 .row{
   display:flex;
   gap:8px;
-  align-items:center
+  flex-wrap:wrap;
+  margin-bottom:10px;
 }
-.row select{
-  flex:1;
-  background:#181818;
-  color:#fff;
-  border:1px solid #444;
+
+button,select{
+  background:#171717;
+  color:white;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:11px 13px;
+  font-weight:650;
+}
+
+button.primary{
+  background:#eee;
+  color:#111;
+}
+
+button.ai{
+  background:#10331d;
+  border-color:#1d6b38;
+  color:#aaffc2;
+}
+
+button.warn{
+  color:#ffd56a;
+}
+
+button:disabled{
+  opacity:.45;
+}
+
+.card{
+  background:#101010;
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+.card h3{
+  margin:0 0 12px;
+  font-size:15px;
+}
+
+.metricGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.metric{
+  background:#080808;
+  border:1px solid #222;
+  padding:10px;
+  border-radius:10px;
+}
+
+.metric .name{
+  color:#888;
+  font-size:11px;
+}
+
+.metric .value{
+  margin-top:4px;
+  font-size:20px;
+  font-weight:750;
+}
+
+.scene{
+  font-size:22px;
+  font-weight:800;
+  color:#9effbb;
+}
+
+.recommendation{
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  background:#08150d;
+  border:1px solid #164b28;
+  line-height:1.6;
+}
+
+label{
+  display:block;
+  color:#aaa;
+  font-size:12px;
+  margin:10px 0 5px;
+}
+
+input[type=range]{
+  width:100%;
+}
+
+canvas.hist{
+  width:100%;
+  height:100px;
+  background:#050505;
   border-radius:8px;
-  padding:8px
+  border:1px solid #222;
 }
-details{margin-top:10px}
+
+details{
+  margin-top:10px;
+}
+
 pre{
   white-space:pre-wrap;
   word-break:break-word;
-  color:#b9dfff;
+  color:#b8d9e8;
   font-size:11px;
-  max-height:330px;
-  overflow:auto
 }
-h2{
-  font-size:17px;
-  margin:5px 0 12px
+
+.photo{
+  width:100%;
+  margin-top:10px;
+  border-radius:12px;
 }
-.ok{color:#91e6aa}
-.warn{color:#ffd479}
-.err{color:#ff9d9d}
+
+.hidden{
+  display:none;
+}
+
+.modebar{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.modebar button.active{
+  background:#eee;
+  color:#111;
+}
+
+.small{
+  color:#777;
+  font-size:11px;
+  line-height:1.4;
+}
+
+#flash{
+  position:fixed;
+  inset:0;
+  background:white;
+  pointer-events:none;
+  opacity:0;
+  z-index:100;
+}
+
+.flashNow{
+  animation:flash .25s;
+}
+
+@keyframes flash{
+  0%{opacity:0}
+  40%{opacity:.8}
+  100%{opacity:0}
+}
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div id="flash"></div>
 
 <header>
-  <div class="title">Pura 80 Camera Lab</div>
-  <div class="badge">V2 · Lens Scanner</div>
+  <div class="title">
+    Pura 80 Camera Lab
+    <span class="badge">V3 · AI Camera</span>
+  </div>
+
+  <button id="scanBtn">ESCANEAR</button>
 </header>
 
-<div class="stage">
-
+<section class="preview">
   <video id="video" autoplay playsinline muted></video>
 
   <div id="status" class="status">
-    Tocá “ESCANEAR CÁMARAS” para comenzar.
+    Iniciando cámara…
   </div>
 
-</div>
+  <div class="aiOverlay">
+    <div>AI: <b id="aiState">esperando</b></div>
+    <div>Luz: <b id="lightMini">--</b></div>
+    <div>Escena: <b id="sceneMini">--</b></div>
+  </div>
+</section>
 
-<div class="toolbar">
+<div class="controls">
 
-  <button id="scan" class="primary">
-    ESCANEAR CÁMARAS
-  </button>
+  <div class="card">
+    <h3>Modo de cámara</h3>
 
-  <button id="torch" disabled>
-    ⚡ Torch
-  </button>
+    <div class="modebar">
+      <button id="autoMode">AUTO IA</button>
+      <button id="proMode" class="active">AI PRO</button>
+      <button id="manualMode">MANUAL</button>
+    </div>
 
-  <button id="diag" disabled>
-    DIAG
-  </button>
+    <p class="small">
+      AUTO IA analiza y aplica ajustes compatibles.
+      AI PRO recomienda antes de aplicar.
+      MANUAL deja los controles bajo tu decisión.
+    </p>
+  </div>
 
-</div>
+  <div class="row">
+    <button class="ai" id="analyzeBtn">
+      🧠 ANALIZAR ESCENA
+    </button>
 
-<div class="panel">
+    <button class="ai" id="applyBtn">
+      ✨ APLICAR IA
+    </button>
 
-  <div id="proCard" class="card" hidden>
+    <button class="primary" id="photoBtn">
+      ● FOTO
+    </button>
 
-    <h2>Controles PRO — cámara activa</h2>
+    <button class="warn" id="torchBtn">
+      ⚡ TORCH
+    </button>
+  </div>
 
-    <div id="controls" class="controls"></div>
+
+  <div class="card">
+    <h3>AI Scene Analyzer</h3>
+
+    <div id="sceneName" class="scene">
+      Esperando análisis
+    </div>
+
+    <div class="metricGrid">
+
+      <div class="metric">
+        <div class="name">Luminosidad</div>
+        <div class="value" id="brightness">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="name">Contraste</div>
+        <div class="value" id="contrast">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="name">Sombras</div>
+        <div class="value" id="shadows">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="name">Altas luces</div>
+        <div class="value" id="highlights">--</div>
+      </div>
+
+    </div>
+
+    <label>Histograma de luminancia</label>
+    <canvas id="histogram" class="hist"
+            width="500" height="100"></canvas>
+
+    <div id="recommendation"
+         class="recommendation">
+      Tocá ANALIZAR ESCENA.
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3>Controles PRO — cámara activa</h3>
+
+    <label>Enfoque</label>
+    <select id="focusMode"></select>
+
+    <label id="focusLabel">Distancia de enfoque</label>
+    <input id="focusDistance" type="range">
+
+    <label>Exposición</label>
+    <select id="exposureMode"></select>
+
+    <label id="evLabel">Compensación EV</label>
+    <input id="ev" type="range">
+
+    <label id="expLabel">Tiempo de exposición</label>
+    <input id="exposureTime" type="range">
+
+    <label id="isoLabel">ISO</label>
+    <input id="iso" type="range">
+
+    <label>Balance de blancos</label>
+    <select id="wbMode"></select>
+
+    <label id="tempLabel">Temperatura de color</label>
+    <input id="colorTemperature" type="range">
 
     <details>
       <summary>Settings / capabilities</summary>
-      <pre id="activeJson"></pre>
+      <pre id="diag"></pre>
     </details>
-
   </div>
 
-  <h2 id="count">
-    Cámaras detectadas: —
-  </h2>
 
-  <div id="cams"></div>
+  <div class="card">
+    <h3>Cámaras detectadas</h3>
+    <div id="cameraList">
+      Escaneando…
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3>Última fotografía</h3>
+
+    <img id="photoPreview"
+         class="photo hidden">
+
+    <div id="photoInfo"
+         class="small">
+      Todavía no se tomó ninguna fotografía.
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button id="savePhoto"
+              class="hidden">
+        GUARDAR FOTO
+      </button>
+    </div>
+  </div>
 
 </div>
 
-</div>
+<canvas id="analysisCanvas"
+        width="320"
+        height="240"
+        class="hidden"></canvas>
+
+<canvas id="captureCanvas"
+        class="hidden"></canvas>
 
 <script>
 
 const $ = s => document.querySelector(s);
 
+const video = $("#video");
+const statusEl = $("#status");
+
 let stream = null;
 let track = null;
-let devices = [];
-let activeId = null;
+let caps = {};
+let settings = {};
+let cameras = [];
 
-const status = (t,c='') => {
-  const e = $('#status');
-  e.textContent = t;
-  e.className = 'status ' + c;
-};
+let mode = "pro";
+let torchOn = false;
+let lastAnalysis = null;
+let photoBlob = null;
+let autoTimer = null;
 
-const safe = o =>
-  JSON.stringify(
-    o,
-    (k,v) => typeof v === 'bigint' ? String(v) : v,
-    2
-  );
 
-async function stop(){
+/* =========================
+   UTILIDADES
+========================= */
 
-  if(stream){
-    stream.getTracks().forEach(t => t.stop());
-  }
-
-  stream = null;
-  track = null;
+function clamp(v,min,max){
+  return Math.max(min,Math.min(max,v));
 }
 
-async function permission(){
-
-  const s =
-    await navigator.mediaDevices.getUserMedia({
-      video:true,
-      audio:false
-    });
-
-  s.getTracks().forEach(t => t.stop());
+function setStatus(t){
+  statusEl.textContent = t;
 }
 
-async function openCam(deviceId){
-
-  await stop();
-
-  status('Abriendo cámara…');
-
-  const tries = [
-
-    {
-      deviceId:{exact:deviceId},
-      width:{ideal:4096},
-      height:{ideal:3072}
-    },
-
-    {
-      deviceId:{exact:deviceId},
-      width:{ideal:1920},
-      height:{ideal:1080}
-    },
-
-    {
-      deviceId:{exact:deviceId}
-    }
-
-  ];
-
-  let last;
-
-  for(const video of tries){
-
-    try{
-
-      stream =
-        await navigator.mediaDevices.getUserMedia({
-          video,
-          audio:false
-        });
-
-      break;
-
-    }catch(e){
-
-      last = e;
-
-    }
-  }
-
-  if(!stream)
-    throw last;
-
-  $('#video').srcObject = stream;
-
-  track =
-    stream.getVideoTracks()[0];
-
-  activeId = deviceId;
-
-  await $('#video').play().catch(()=>{});
-
-  const s =
-    track.getSettings();
-
-  const c =
-    track.getCapabilities
-      ? track.getCapabilities()
-      : {};
-
-  status(
-    (track.label || 'Cámara') +
-    ' · ' +
-    (s.width || '?') +
-    '×' +
-    (s.height || '?'),
-    'ok'
-  );
-
-  $('#diag').disabled = false;
-
-  buildControls(c,s);
-
-  $('#activeJson').textContent =
-    safe({
-      label:track.label,
-      settings:s,
-      capabilities:c
-    });
-
-  $('#proCard').hidden = false;
-
-  render();
+function flash(){
+  const f=$("#flash");
+  f.classList.remove("flashNow");
+  void f.offsetWidth;
+  f.classList.add("flashNow");
 }
 
-function rangeControl(
-  name,
-  label,
-  cap,
-  val
-){
-
-  if(
-    !cap ||
-    typeof cap !== 'object' ||
-    cap.min === undefined
-  )
-    return '';
-
-  let step = cap.step;
-
-  if(!step || step <= 0)
-    step =
-      (cap.max-cap.min)/100 || 1;
-
-  const v =
-    val !== undefined
-      ? val
-      : cap.min;
-
-  return `
-  <div class="control">
-
-    <label>
-      ${label}:
-      <b id="${name}Val">${v}</b>
-      (min ${cap.min},
-       max ${cap.max},
-       step ${step})
-    </label>
-
-    <input
-      id="${name}"
-      type="range"
-      min="${cap.min}"
-      max="${cap.max}"
-      step="${step}"
-      value="${v}"
-    >
-
-  </div>
-  `;
+function capability(name){
+  return caps && caps[name];
 }
 
-function selectControl(
-  name,
-  label,
-  opts,
-  val
-){
-
-  if(
-    !Array.isArray(opts) ||
-    !opts.length
-  )
-    return '';
-
-  return `
-  <div class="control">
-
-    <label>${label}</label>
-
-    <div class="row">
-
-      <select id="${name}">
-
-        ${opts.map(
-          x =>
-          `<option
-            ${x===val?'selected':''}
-          >${x}</option>`
-        ).join('')}
-
-      </select>
-
-    </div>
-
-  </div>
-  `;
+function supports(name){
+  return capability(name) !== undefined;
 }
 
-function buildControls(c,s){
+function setRange(el,cap,value){
 
-  let h='';
-
-  h += selectControl(
-    'focusMode',
-    'Modo de enfoque',
-    c.focusMode,
-    s.focusMode
-  );
-
-  h += rangeControl(
-    'focusDistance',
-    'Distancia de enfoque',
-    c.focusDistance,
-    s.focusDistance
-  );
-
-  h += selectControl(
-    'exposureMode',
-    'Exposición',
-    c.exposureMode,
-    s.exposureMode
-  );
-
-  h += rangeControl(
-    'exposureCompensation',
-    'Compensación EV',
-    c.exposureCompensation,
-    s.exposureCompensation
-  );
-
-  h += rangeControl(
-    'exposureTime',
-    'Tiempo de exposición',
-    c.exposureTime,
-    s.exposureTime
-  );
-
-  h += rangeControl(
-    'iso',
-    'ISO',
-    c.iso,
-    s.iso
-  );
-
-  h += selectControl(
-    'whiteBalanceMode',
-    'Balance de blancos',
-    c.whiteBalanceMode,
-    s.whiteBalanceMode
-  );
-
-  h += rangeControl(
-    'colorTemperature',
-    'Temperatura de color',
-    c.colorTemperature,
-    s.colorTemperature
-  );
-
-  h += rangeControl(
-    'zoom',
-    'Zoom',
-    c.zoom,
-    s.zoom
-  );
-
-  $('#controls').innerHTML =
-    h ||
-    `<div class="small">
-      El navegador no expone
-      controles avanzados
-      para esta cámara.
-    </div>`;
-
-  for(
-    const el of
-    $('#controls').querySelectorAll(
-      'input,select'
-    )
-  ){
-
-    el.addEventListener(
-      el.tagName === 'SELECT'
-        ? 'change'
-        : 'input',
-
-      async()=>{
-
-        if(el.type === 'range'){
-
-          $('#'+el.id+'Val')
-            .textContent =
-            el.value;
-
-        }
-
-        try{
-
-          await track.applyConstraints({
-
-            advanced:[
-              {
-                [el.id]:
-                el.type === 'range'
-                  ? Number(el.value)
-                  : el.value
-              }
-            ]
-
-          });
-
-        }catch(e){
-
-          status(
-            'Control no aceptado: ' +
-            el.id +
-            ' — ' +
-            e.name,
-            'warn'
-          );
-
-        }
-
-      }
-    );
-  }
-
-  $('#torch').disabled =
-    !c.torch;
-}
-
-async function inspectDevice(d){
-
-  let st=null;
-  let tr=null;
-
-  try{
-
-    st =
-      await navigator.mediaDevices
-      .getUserMedia({
-
-        video:{
-          deviceId:{
-            exact:d.deviceId
-          }
-        },
-
-        audio:false
-
-      });
-
-    tr =
-      st.getVideoTracks()[0];
-
-    const s =
-      tr.getSettings();
-
-    const c =
-      tr.getCapabilities
-        ? tr.getCapabilities()
-        : {};
-
-    return {
-
-      label:
-        tr.label ||
-        d.label ||
-        'Cámara',
-
-      deviceId:d.deviceId,
-
-      groupId:d.groupId,
-
-      settings:s,
-
-      capabilities:c
-
-    };
-
-  }catch(e){
-
-    return {
-
-      label:
-        d.label ||
-        'Cámara',
-
-      deviceId:d.deviceId,
-
-      groupId:d.groupId,
-
-      error:
-        e.name +
-        ': ' +
-        e.message
-
-    };
-
-  }finally{
-
-    if(st)
-      st.getTracks()
-        .forEach(t=>t.stop());
-
-  }
-}
-
-function summary(x){
-
-  const c =
-    x.capabilities || {};
-
-  const s =
-    x.settings || {};
-
-  return [
-
-    `Resolución actual: ${
-      s.width || '?'
-    } × ${
-      s.height || '?'
-    }`,
-
-    `Facing: ${
-      s.facingMode || '—'
-    }`,
-
-    `ISO: ${
-      c.iso
-      ? c.iso.min +
-        '–' +
-        c.iso.max
-      : 'No expuesto'
-    }`,
-
-    `Enfoque: ${
-      Array.isArray(c.focusMode)
-      ? c.focusMode.join(' / ')
-      : 'No expuesto'
-    }`,
-
-    `Torch: ${
-      c.torch
-      ? 'Sí'
-      : 'No'
-    }`,
-
-    `Zoom: ${
-      c.zoom
-      ? c.zoom.min +
-        '–' +
-        c.zoom.max
-      : 'No expuesto'
-    }`,
-
-    `deviceId: ${
-      x.deviceId
-    }`,
-
-    `groupId: ${
-      x.groupId || '—'
-    }`
-
-  ].join('\n');
-}
-
-function render(){
-
-  $('#count').textContent =
-    'Cámaras detectadas: ' +
-    devices.length;
-
-  $('#cams').innerHTML =
-    devices.map(
-      (x,i)=>`
-
-      <div class="card">
-
-        <div class="camhead">
-
-          <div>
-
-            <div class="camname">
-              CAM ${i} — ${x.label}
-            </div>
-
-            <div class="small">
-              ${
-                x.error
-                ? 'No se pudo inspeccionar'
-                : 'Sensor expuesto por el navegador'
-              }
-            </div>
-
-          </div>
-
-          <button
-            onclick="openCam('${x.deviceId}')"
-            ${x.error?'disabled':''}
-          >
-            ${
-              activeId === x.deviceId
-              ? 'ACTIVA'
-              : 'PROBAR'
-            }
-          </button>
-
-        </div>
-
-        <div class="kv">
-          ${
-            x.error
-            ? x.error
-            : summary(x)
-          }
-        </div>
-
-        <details>
-
-          <summary>
-            Ver capacidades completas
-          </summary>
-
-          <pre>${safe(x)}</pre>
-
-        </details>
-
-      </div>
-
-    `).join('');
-}
-
-async function scan(){
-
-  if(
-    !navigator.mediaDevices
-    ?.getUserMedia
-  ){
-
-    status(
-      'Este navegador no soporta MediaDevices.',
-      'err'
-    );
-
+  if(!cap || typeof cap !== "object"){
+    el.disabled=true;
     return;
   }
 
-  $('#scan').disabled = true;
+  el.disabled=false;
 
-  status(
-    'Solicitando permiso…'
-  );
+  if(Number.isFinite(cap.min))
+    el.min=cap.min;
+
+  if(Number.isFinite(cap.max))
+    el.max=cap.max;
+
+  if(Number.isFinite(cap.step) && cap.step>0)
+    el.step=cap.step;
+  else
+    el.step="any";
+
+  if(Number.isFinite(value))
+    el.value=value;
+  else if(Number.isFinite(cap.min))
+    el.value=cap.min;
+}
+
+function fillSelect(el,values,current){
+
+  el.innerHTML="";
+
+  if(!Array.isArray(values)){
+    el.disabled=true;
+    return;
+  }
+
+  el.disabled=false;
+
+  values.forEach(v=>{
+    const o=document.createElement("option");
+    o.value=v;
+    o.textContent=v;
+    if(v===current) o.selected=true;
+    el.appendChild(o);
+  });
+}
+
+
+/* =========================
+   CÁMARA
+========================= */
+
+async function startCamera(deviceId=null){
 
   try{
 
-    await permission();
+    if(stream){
+      stream.getTracks().forEach(t=>t.stop());
+    }
+
+    const constraints={
+      audio:false,
+      video:{
+        facingMode: deviceId ? undefined :
+          {ideal:"environment"},
+
+        deviceId: deviceId ?
+          {exact:deviceId} :
+          undefined,
+
+        width:{ideal:4096},
+        height:{ideal:3072}
+      }
+    };
+
+    stream =
+      await navigator.mediaDevices
+        .getUserMedia(constraints);
+
+    video.srcObject=stream;
+
+    await video.play();
+
+    track=stream.getVideoTracks()[0];
+
+    caps =
+      track.getCapabilities ?
+      track.getCapabilities() : {};
+
+    settings =
+      track.getSettings ?
+      track.getSettings() : {};
+
+    setStatus(
+      `${track.label} · `+
+      `${settings.width||"?"}×${settings.height||"?"}`
+    );
+
+    loadControls();
+
+    await scanDevices();
+
+    analyzeScene();
+
+  }catch(err){
+
+    console.error(err);
+
+    setStatus(
+      "Error cámara: "+err.message
+    );
+  }
+}
+
+
+async function scanDevices(){
+
+  try{
 
     const all =
       await navigator.mediaDevices
-      .enumerateDevices();
+        .enumerateDevices();
 
-    const vids =
-      all.filter(
-        d =>
-        d.kind === 'videoinput'
-      );
+    cameras =
+      all.filter(d=>d.kind==="videoinput");
 
-    status(
-      `Inspeccionando ${vids.length} cámara(s)…`
-    );
+    const box=$("#cameraList");
+    box.innerHTML="";
 
-    devices=[];
+    cameras.forEach((cam,i)=>{
 
-    for(
-      let i=0;
-      i<vids.length;
-      i++
-    ){
+      const div=document.createElement("div");
 
-      status(
-        `Inspeccionando cámara ${
-          i+1
-        }/${vids.length}…`
-      );
+      div.style.cssText=
+        "padding:10px;border:1px solid #292929;"+
+        "border-radius:10px;margin-bottom:8px";
 
-      devices.push(
-        await inspectDevice(
-          vids[i]
-        )
-      );
+      const active =
+        settings.deviceId===cam.deviceId;
 
-      render();
-    }
+      div.innerHTML=`
+        <b>CAM ${i}</b><br>
+        ${cam.label || "Cámara "+i}<br>
+        <span class="small">
+        ${active ? "ACTIVA" : "Disponible"}
+        </span>
+        <br><br>
+      `;
 
-    if(devices.length){
+      const b=document.createElement("button");
 
-      await openCam(
-        devices[0].deviceId
-      );
+      b.textContent =
+        active ? "ACTIVA" : "PROBAR";
 
-    }else{
+      b.disabled=active;
 
-      status(
-        'No se encontraron cámaras.',
-        'err'
-      );
+      b.onclick=()=>{
+        startCamera(cam.deviceId);
+      };
 
-    }
+      div.appendChild(b);
+
+      box.appendChild(div);
+    });
 
   }catch(e){
-
-    status(
-      'Error: ' +
-      e.name +
-      ' — ' +
-      e.message,
-      'err'
-    );
-
-  }finally{
-
-    $('#scan').disabled=false;
-
+    console.error(e);
   }
 }
 
-$('#scan').onclick=scan;
 
-$('#torch').onclick =
-async()=>{
+/* =========================
+   CONTROLES PRO
+========================= */
 
-  if(!track)
-    return;
+function loadControls(){
+
+  settings=track.getSettings();
+
+  fillSelect(
+    $("#focusMode"),
+    caps.focusMode,
+    settings.focusMode
+  );
+
+  fillSelect(
+    $("#exposureMode"),
+    caps.exposureMode,
+    settings.exposureMode
+  );
+
+  fillSelect(
+    $("#wbMode"),
+    caps.whiteBalanceMode,
+    settings.whiteBalanceMode
+  );
+
+  setRange(
+    $("#focusDistance"),
+    caps.focusDistance,
+    settings.focusDistance
+  );
+
+  setRange(
+    $("#ev"),
+    caps.exposureCompensation,
+    settings.exposureCompensation
+  );
+
+  setRange(
+    $("#exposureTime"),
+    caps.exposureTime,
+    settings.exposureTime
+  );
+
+  setRange(
+    $("#iso"),
+    caps.iso,
+    settings.iso
+  );
+
+  setRange(
+    $("#colorTemperature"),
+    caps.colorTemperature,
+    settings.colorTemperature
+  );
+
+  updateLabels();
+
+  $("#diag").textContent=
+    JSON.stringify({
+      label:track.label,
+      settings,
+      capabilities:caps
+    },null,2);
+}
+
+
+async function applyAdvanced(obj){
+
+  if(!track) return false;
 
   try{
 
-    const now =
-      !!track.getSettings().torch;
-
     await track.applyConstraints({
-
-      advanced:[
-        {
-          torch:!now
-        }
-      ]
-
+      advanced:[obj]
     });
 
-    $('#torch').textContent =
-      !now
-      ? '⚡ Torch ON'
-      : '⚡ Torch';
+    settings=track.getSettings();
+
+    loadControls();
+
+    return true;
 
   }catch(e){
 
-    status(
-      'No se pudo cambiar torch: ' +
-      e.name,
-      'warn'
+    console.warn(
+      "Constraint rechazada",
+      obj,
+      e
     );
 
+    return false;
   }
-};
+}
 
-$('#diag').onclick=()=>{
 
-  if(!track)
+function updateLabels(){
+
+  $("#focusLabel").textContent =
+    "Distancia de enfoque: "+
+    ($("#focusDistance").value||"--");
+
+  $("#evLabel").textContent =
+    "Compensación EV: "+
+    ($("#ev").value||"--");
+
+  $("#expLabel").textContent =
+    "Tiempo de exposición: "+
+    ($("#exposureTime").value||"--");
+
+  $("#isoLabel").textContent =
+    "ISO: "+
+    ($("#iso").value||"--");
+
+  $("#tempLabel").textContent =
+    "Temperatura de color: "+
+    ($("#colorTemperature").value||"--");
+}
+
+
+$("#focusMode").onchange=e=>
+  applyAdvanced({
+    focusMode:e.target.value
+  });
+
+$("#exposureMode").onchange=e=>
+  applyAdvanced({
+    exposureMode:e.target.value
+  });
+
+$("#wbMode").onchange=e=>
+  applyAdvanced({
+    whiteBalanceMode:e.target.value
+  });
+
+
+$("#focusDistance").onchange=e=>
+  applyAdvanced({
+    focusDistance:Number(e.target.value)
+  });
+
+$("#ev").onchange=e=>
+  applyAdvanced({
+    exposureCompensation:Number(e.target.value)
+  });
+
+$("#exposureTime").onchange=e=>
+  applyAdvanced({
+    exposureTime:Number(e.target.value)
+  });
+
+$("#iso").onchange=e=>
+  applyAdvanced({
+    iso:Number(e.target.value)
+  });
+
+$("#colorTemperature").onchange=e=>
+  applyAdvanced({
+    colorTemperature:Number(e.target.value)
+  });
+
+
+[
+ "#focusDistance",
+ "#ev",
+ "#exposureTime",
+ "#iso",
+ "#colorTemperature"
+].forEach(id=>{
+
+  $(id).addEventListener(
+    "input",
+    updateLabels
+  );
+
+});
+
+
+/* =========================
+   ANALIZADOR DE ESCENA
+========================= */
+
+function analyzeScene(){
+
+  if(!video.videoWidth) return;
+
+  const canvas=$("#analysisCanvas");
+  const ctx=canvas.getContext(
+    "2d",
+    {willReadFrequently:true}
+  );
+
+  const w=320;
+  const h=240;
+
+  canvas.width=w;
+  canvas.height=h;
+
+  ctx.drawImage(video,0,0,w,h);
+
+  const data=
+    ctx.getImageData(0,0,w,h).data;
+
+  let sum=0;
+  let sumSq=0;
+  let dark=0;
+  let bright=0;
+
+  const histogram =
+    new Array(256).fill(0);
+
+  let count=0;
+
+  /*
+    Muestreo parcial para reducir
+    carga sobre el teléfono.
+  */
+
+  for(let i=0;i<data.length;i+=16){
+
+    const r=data[i];
+    const g=data[i+1];
+    const b=data[i+2];
+
+    const lum =
+      Math.round(
+        0.2126*r +
+        0.7152*g +
+        0.0722*b
+      );
+
+    histogram[lum]++;
+
+    sum+=lum;
+    sumSq+=lum*lum;
+
+    if(lum<45) dark++;
+    if(lum>220) bright++;
+
+    count++;
+  }
+
+  const mean=sum/count;
+
+  const variance=
+    Math.max(
+      0,
+      sumSq/count -
+      mean*mean
+    );
+
+  const std=
+    Math.sqrt(variance);
+
+  const darkPct=
+    dark/count*100;
+
+  const brightPct=
+    bright/count*100;
+
+  let scene="Luz normal";
+
+  if(mean<45)
+    scene="Muy poca luz";
+
+  else if(mean<80)
+    scene="Poca luz";
+
+  else if(
+    darkPct>25 &&
+    brightPct>8
+  )
+    scene="Contraluz";
+
+  else if(mean>205)
+    scene="Escena muy luminosa";
+
+  else if(std>75)
+    scene="Alto contraste";
+
+  else if(std<30)
+    scene="Bajo contraste";
+
+
+  lastAnalysis={
+    mean,
+    std,
+    darkPct,
+    brightPct,
+    histogram,
+    scene
+  };
+
+
+  $("#brightness").textContent=
+    Math.round(mean);
+
+  $("#contrast").textContent=
+    Math.round(std);
+
+  $("#shadows").textContent=
+    darkPct.toFixed(1)+"%";
+
+  $("#highlights").textContent=
+    brightPct.toFixed(1)+"%";
+
+  $("#sceneName").textContent=scene;
+
+  $("#lightMini").textContent=
+    Math.round(mean)+"/255";
+
+  $("#sceneMini").textContent=scene;
+
+  $("#aiState").textContent=
+    mode==="manual" ?
+    "manual" :
+    "analizado";
+
+
+  drawHistogram(histogram);
+
+  createRecommendation();
+
+  if(mode==="auto"){
+    applyAI();
+  }
+}
+
+
+function drawHistogram(hist){
+
+  const c=$("#histogram");
+  const ctx=c.getContext("2d");
+
+  const w=c.width;
+  const h=c.height;
+
+  ctx.clearRect(0,0,w,h);
+
+  const max=Math.max(...hist);
+
+  ctx.fillStyle="#8de6a9";
+
+  for(let i=0;i<256;i++){
+
+    const x=
+      i/255*w;
+
+    const bh=
+      max ?
+      hist[i]/max*h :
+      0;
+
+    ctx.fillRect(
+      x,
+      h-bh,
+      Math.max(1,w/256),
+      bh
+    );
+  }
+}
+
+
+/* =========================
+   MOTOR AI
+========================= */
+
+function calculateAI(){
+
+  if(!lastAnalysis)
+    return {};
+
+  const a=lastAnalysis;
+
+  const result={};
+
+  /*
+    EV
+  */
+
+  if(caps.exposureCompensation){
+
+    let ev=0;
+
+    if(a.mean<45)
+      ev=1;
+
+    else if(a.mean<80)
+      ev=.5;
+
+    else if(a.scene==="Contraluz")
+      ev=.5;
+
+    else if(a.mean>205)
+      ev=-1;
+
+    else if(a.mean>175)
+      ev=-.5;
+
+    ev=clamp(
+      ev,
+      caps.exposureCompensation.min,
+      caps.exposureCompensation.max
+    );
+
+    result.exposureCompensation=ev;
+  }
+
+
+  /*
+    ISO
+  */
+
+  if(caps.iso){
+
+    let iso;
+
+    if(a.mean<40)
+      iso=800;
+
+    else if(a.mean<70)
+      iso=400;
+
+    else if(a.mean<110)
+      iso=200;
+
+    else
+      iso=100;
+
+    iso=clamp(
+      iso,
+      caps.iso.min,
+      caps.iso.max
+    );
+
+    result.iso=iso;
+  }
+
+
+  /*
+    Enfoque
+  */
+
+  if(
+    Array.isArray(caps.focusMode) &&
+    caps.focusMode.includes("continuous")
+  ){
+    result.focusMode="continuous";
+  }
+
+
+  /*
+    Exposición
+  */
+
+  if(
+    Array.isArray(caps.exposureMode) &&
+    caps.exposureMode.includes("continuous")
+  ){
+    result.exposureMode="continuous";
+  }
+
+
+  /*
+    Balance de blancos
+  */
+
+  if(
+    Array.isArray(caps.whiteBalanceMode) &&
+    caps.whiteBalanceMode.includes("continuous")
+  ){
+    result.whiteBalanceMode=
+      "continuous";
+  }
+
+
+  return result;
+}
+
+
+function createRecommendation(){
+
+  const r=calculateAI();
+
+  let html=
+    "<b>Recomendación AI PRO</b><br>";
+
+  html+=
+    "Escena: "+
+    lastAnalysis.scene+
+    "<br>";
+
+  if(
+    r.exposureCompensation!==undefined
+  )
+    html+=
+      "EV recomendado: "+
+      r.exposureCompensation+
+      "<br>";
+
+  if(r.iso!==undefined)
+    html+=
+      "ISO objetivo: "+
+      Math.round(r.iso)+
+      "<br>";
+
+  if(r.focusMode)
+    html+=
+      "Enfoque: "+
+      r.focusMode+
+      "<br>";
+
+  if(r.exposureMode)
+    html+=
+      "Exposición: "+
+      r.exposureMode+
+      "<br>";
+
+  if(r.whiteBalanceMode)
+    html+=
+      "Balance blancos: "+
+      r.whiteBalanceMode+
+      "<br>";
+
+  if(lastAnalysis.mean<60)
+    html+=
+      "<br>💡 Luz muy baja: "+
+      "considerá Torch si el sujeto está cerca.";
+
+  if(lastAnalysis.brightPct>15)
+    html+=
+      "<br>⚠️ Muchas altas luces: "+
+      "evitar sobreexposición.";
+
+  $("#recommendation").innerHTML=html;
+}
+
+
+async function applyAI(){
+
+  if(!lastAnalysis)
+    analyzeScene();
+
+  const r=calculateAI();
+
+  $("#aiState").textContent=
+    "aplicando…";
+
+  /*
+    Aplicamos primero modos automáticos.
+  */
+
+  if(r.focusMode)
+    await applyAdvanced({
+      focusMode:r.focusMode
+    });
+
+  if(r.exposureMode)
+    await applyAdvanced({
+      exposureMode:r.exposureMode
+    });
+
+  if(r.whiteBalanceMode)
+    await applyAdvanced({
+      whiteBalanceMode:
+        r.whiteBalanceMode
+    });
+
+
+  /*
+    Luego ajustes numéricos.
+    Cada uno se prueba por separado.
+  */
+
+  if(
+    r.exposureCompensation !==
+    undefined
+  ){
+    await applyAdvanced({
+      exposureCompensation:
+        r.exposureCompensation
+    });
+  }
+
+
+  /*
+    ISO puede ser rechazado por algunos
+    navegadores mientras exposición esté
+    en modo continuous.
+
+    Lo intentamos pero no rompemos
+    la cámara si Chrome lo rechaza.
+  */
+
+  if(r.iso!==undefined){
+
+    await applyAdvanced({
+      iso:r.iso
+    });
+  }
+
+  settings=track.getSettings();
+
+  $("#aiState").textContent=
+    "aplicada";
+
+  $("#recommendation").innerHTML+=
+    "<br><br><b>Ajustes comprobados:</b><br>"+
+    "ISO real: "+
+    (settings.iso ?? "no informado")+
+    "<br>EV real: "+
+    (settings.exposureCompensation ??
+     "no informado")+
+    "<br>Enfoque real: "+
+    (settings.focusMode ??
+     "no informado");
+
+  loadControls();
+}
+
+
+/* =========================
+   TORCH
+========================= */
+
+async function toggleTorch(){
+
+  if(!caps.torch){
+
+    alert(
+      "La cámara activa no expone Torch."
+    );
+
     return;
+  }
 
-  const c =
-    track.getCapabilities
-    ? track.getCapabilities()
-    : {};
+  torchOn=!torchOn;
 
-  const s =
-    track.getSettings();
-
-  $('#activeJson').textContent =
-    safe({
-      label:track.label,
-      settings:s,
-      capabilities:c
+  const ok=
+    await applyAdvanced({
+      torch:torchOn
     });
 
-  $('#proCard')
-    .scrollIntoView({
-      behavior:'smooth'
-    });
-};
+  if(!ok)
+    torchOn=false;
 
-window.openCam=openCam;
+  $("#torchBtn").textContent=
+    torchOn ?
+    "⚡ TORCH ON" :
+    "⚡ TORCH";
+}
 
-window.addEventListener(
-  'pagehide',
-  stop
-);
+
+/* =========================
+   CAPTURA
+========================= */
+
+async function takePhoto(){
+
+  if(!video.videoWidth) return;
+
+  flash();
+
+  /*
+    Capturamos exactamente la resolución
+    que está entregando el stream.
+  */
+
+  const canvas=$("#captureCanvas");
+
+  canvas.width=
+    video.videoWidth;
+
+  canvas.height=
+    video.videoHeight;
+
+  const ctx=canvas.getContext("2d");
+
+  ctx.drawImage(
+    video,
+    0,0,
+    canvas.width,
+    canvas.height
+  );
+
+  photoBlob=
+    await new Promise(resolve=>
+      canvas.toBlob(
+        resolve,
+        "image/jpeg",
+        .95
+      )
+    );
+
+  const url=
+    URL.createObjectURL(photoBlob);
+
+  const img=$("#photoPreview");
+
+  img.src=url;
+  img.classList.remove("hidden");
+
+  $("#savePhoto")
+    .classList.remove("hidden");
+
+  settings=track.getSettings();
+
+  $("#photoInfo").innerHTML=
+    `Captura: ${canvas.width}×${canvas.height}<br>`+
+    `ISO: ${settings.iso ?? "?"} · `+
+    `EV: ${settings.exposureCompensation ?? "?"}<br>`+
+    `Enfoque: ${settings.focusMode ?? "?"}`;
+}
+
+
+function savePhoto(){
+
+  if(!photoBlob) return;
+
+  const a=document.createElement("a");
+
+  a.href=
+    URL.createObjectURL(photoBlob);
+
+  const now=new Date();
+
+  const name=
+    "Pura80_AI_"+
+    now.getFullYear()+
+    String(now.getMonth()+1)
+      .padStart(2,"0")+
+    String(now.getDate())
+      .padStart(2,"0")+
+    "_"+
+    String(now.getHours())
+      .padStart(2,"0")+
+    String(now.getMinutes())
+      .padStart(2,"0")+
+    String(now.getSeconds())
+      .padStart(2,"0")+
+    ".jpg";
+
+  a.download=name;
+
+  a.click();
+
+  setTimeout(
+    ()=>URL.revokeObjectURL(a.href),
+    1000
+  );
+}
+
+
+/* =========================
+   MODOS
+========================= */
+
+function setMode(m){
+
+  mode=m;
+
+  $("#autoMode")
+    .classList.toggle(
+      "active",
+      m==="auto"
+    );
+
+  $("#proMode")
+    .classList.toggle(
+      "active",
+      m==="pro"
+    );
+
+  $("#manualMode")
+    .classList.toggle(
+      "active",
+      m==="manual"
+    );
+
+  clearInterval(autoTimer);
+
+  if(m==="auto"){
+
+    $("#aiState").textContent=
+      "AUTO";
+
+    autoTimer=setInterval(
+      analyzeScene,
+      3000
+    );
+
+    analyzeScene();
+
+  }else if(m==="pro"){
+
+    $("#aiState").textContent=
+      "AI PRO";
+
+  }else{
+
+    $("#aiState").textContent=
+      "MANUAL";
+  }
+}
+
+
+/* =========================
+   EVENTOS
+========================= */
+
+$("#scanBtn").onclick=
+  scanDevices;
+
+$("#analyzeBtn").onclick=
+  analyzeScene;
+
+$("#applyBtn").onclick=
+  applyAI;
+
+$("#photoBtn").onclick=
+  takePhoto;
+
+$("#torchBtn").onclick=
+  toggleTorch;
+
+$("#savePhoto").onclick=
+  savePhoto;
+
+$("#autoMode").onclick=
+  ()=>setMode("auto");
+
+$("#proMode").onclick=
+  ()=>setMode("pro");
+
+$("#manualMode").onclick=
+  ()=>setMode("manual");
+
+
+navigator.mediaDevices
+  ?.addEventListener(
+    "devicechange",
+    scanDevices
+  );
+
+
+/* =========================
+   INICIO
+========================= */
+
+(async()=>{
+
+  if(
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ){
+
+    setStatus(
+      "Este navegador no soporta getUserMedia."
+    );
+
+    return;
+  }
+
+  await startCamera();
+
+})();
 
 </script>
 
